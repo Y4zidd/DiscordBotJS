@@ -1,4 +1,4 @@
-# Discord Bot JS
+<h1 align="center">Discord Bot JS</h1>
 
 <div align="center">
 <img src="https://img.shields.io/badge/Node-%3E%3D%2020-43853D?style=flat-square&logo=node.js&logoColor=white"/>
@@ -7,7 +7,7 @@
 <img src="https://img.shields.io/badge/Framework-Sapphire-blue?style=flat-square"/>
 </div>
 
-Discord bot with AI chat and weather/air quality information features using Sapphire.js framework.
+<center>Discord bot with AI chat and weather/air quality information features using Sapphire.js framework.</center>
 
 ## ✨ Features
 
