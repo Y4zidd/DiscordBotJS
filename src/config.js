@@ -1,20 +1,20 @@
-// Konfigurasi bot
+// Bot configuration
 module.exports = {
   // Bot settings
   bot: {
     name: 'Discord Bot JS',
     version: '1.0.0',
-    description: 'Bot Discord menggunakan Sapphire.js',
+    description: 'Discord Bot using Sapphire.js',
     author: 'Your Name',
     prefix: '!',
     presence: {
-      activity: 'dengan Sapphire.js',
+      activity: 'with Sapphire.js',
       type: 'PLAYING', // PLAYING, STREAMING, LISTENING, WATCHING
       status: 'online' // online, idle, dnd, invisible
     }
   },
 
-  // Colors untuk embeds
+  // Colors for embeds
   colors: {
     primary: 0x0099ff,
     success: 0x00ff00,

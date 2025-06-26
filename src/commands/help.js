@@ -7,7 +7,7 @@ class HelpCommand extends Command {
     super(context, {
       ...options,
       name: 'help',
-      description: 'Tampilkan menu bantuan dengan daftar command'
+      description: 'Show help menu with command list'
     });
   }
 
@@ -15,7 +15,7 @@ class HelpCommand extends Command {
     registry.registerChatInputCommand((builder) =>
       builder
         .setName('help')
-        .setDescription('Tampilkan menu bantuan dengan daftar command')
+        .setDescription('Show help menu with command list')
     );
   }
 
@@ -35,7 +35,7 @@ class HelpCommand extends Command {
     // Main help embed
     const helpEmbed = new EmbedBuilder()
       .setTitle('🤖 **Bot Command Menu**')
-      .setDescription('Pilih command dari dropdown menu di bawah untuk langsung menggunakannya!')
+      .setDescription('Select a command from the dropdown menu below to use it directly!')
       .setColor(config.colors.primary)
       .addFields(
         {
@@ -49,14 +49,14 @@ class HelpCommand extends Command {
         },
         {
           name: '💡 **How to Use**',
-          value: 'Pilih command dari dropdown menu di bawah, atau ketik manual:\n' +
+          value: 'Select a command from the dropdown menu below, or type manually:\n' +
                  '• Slash commands: `/ping`, `/chat`, `/air`\n' +
                  '• Message commands: `!ping`, `!chat`, `!air`',
           inline: false
         }
       )
       .setFooter({ 
-        text: 'Pilih dari dropdown untuk langsung menggunakan command!',
+        text: 'Select from dropdown to use a command directly!',
         iconURL: context.client?.user?.displayAvatarURL() || undefined
       })
       .setTimestamp();
@@ -64,29 +64,29 @@ class HelpCommand extends Command {
     // Create dropdown menu
     const selectMenu = new StringSelectMenuBuilder()
       .setCustomId('help_command_select')
-      .setPlaceholder('🔽 Pilih command yang ingin digunakan...')
+      .setPlaceholder('🔽 Select the command you want to use...')
       .addOptions([
         {
           label: 'Ping - Check Latency',
-          description: 'Cek latensi dan status koneksi bot',
+          description: 'Check bot latency and connection status',
           value: 'ping',
           emoji: '🏓'
         },
         {
           label: 'Chat - AI Conversation', 
-          description: 'Mulai percakapan dengan AI Gemini',
+          description: 'Start conversation with Gemini AI',
           value: 'chat',
           emoji: '💬'
         },
         {
           label: 'Air - Weather & Air Quality',
-          description: 'Cek cuaca dan kualitas udara suatu kota',
+          description: 'Check weather and air quality of a city',
           value: 'air',
           emoji: '🌤️'
         },
         {
           label: 'Help - Show Menu',
-          description: 'Tampilkan menu bantuan ini lagi',
+          description: 'Show this help menu again',
           value: 'help',
           emoji: '❓'
         }

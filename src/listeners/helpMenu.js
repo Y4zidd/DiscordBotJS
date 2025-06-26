@@ -31,14 +31,14 @@ class HelpMenuListener extends Listener {
           break;
         default:
           await interaction.reply({ 
-            content: '❌ Command tidak dikenali!', 
+            content: '❌ Command not recognized!', 
             ephemeral: true 
           });
       }
     } catch (error) {
       console.error('Error handling help menu selection:', error);
       await interaction.reply({ 
-        content: '❌ Terjadi kesalahan saat memproses command!', 
+        content: '❌ An error occurred while processing command!', 
         ephemeral: true 
       });
     }
@@ -55,7 +55,7 @@ class HelpMenuListener extends Listener {
 
     return interaction.editReply(
       `Pong! 🏓\n` +
-      `📡 **Latensi API**: ${diff}ms\n` +
+      `📡 **API Latency**: ${diff}ms\n` +
       `💓 **Heartbeat**: ${ping}ms`
     );
   }
@@ -64,13 +64,13 @@ class HelpMenuListener extends Listener {
     // Create modal for chat input
     const modal = new ModalBuilder()
       .setCustomId('chat_modal')
-      .setTitle('💬 Chat dengan AI');
+      .setTitle('💬 Chat with AI');
 
     const chatInput = new TextInputBuilder()
       .setCustomId('chat_message')
-      .setLabel('Pesan untuk AI')
+      .setLabel('Message for AI')
       .setStyle(TextInputStyle.Paragraph)
-      .setPlaceholder('Ketik pesan Anda disini...')
+      .setPlaceholder('Type your message here...')
       .setRequired(true)
       .setMaxLength(2000);
 
@@ -84,13 +84,13 @@ class HelpMenuListener extends Listener {
     // Create modal for city input
     const modal = new ModalBuilder()
       .setCustomId('air_modal')
-      .setTitle('🌤️ Cek Cuaca & Kualitas Udara');
+      .setTitle('🌤️ Check Weather & Air Quality');
 
     const cityInput = new TextInputBuilder()
       .setCustomId('city_name')
-      .setLabel('Nama Kota')
+      .setLabel('City Name')
       .setStyle(TextInputStyle.Short)
-      .setPlaceholder('Contoh: Jakarta, Surabaya, Tokyo')
+      .setPlaceholder('Example: Jakarta, Surabaya, Tokyo')
       .setRequired(true)
       .setMaxLength(100);
 
@@ -107,7 +107,7 @@ class HelpMenuListener extends Listener {
       await helpCommand.showHelpMenu(interaction);
     } else {
       await interaction.reply({ 
-        content: '❌ Help command tidak ditemukan!', 
+        content: '❌ Help command not found!', 
         ephemeral: true 
       });
     }

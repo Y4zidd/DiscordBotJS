@@ -23,7 +23,7 @@ class ModalSubmitListener extends Listener {
     } catch (error) {
       console.error('Error handling modal submit:', error);
       await interaction.reply({ 
-        content: '❌ Terjadi kesalahan saat memproses input!', 
+        content: '❌ An error occurred while processing input!', 
         ephemeral: true 
       });
     }
@@ -38,7 +38,7 @@ class ModalSubmitListener extends Listener {
       await chatCommand.handleChat(interaction, chatMessage);
     } else {
       await interaction.reply({ 
-        content: '❌ Chat command tidak ditemukan!', 
+        content: '❌ Chat command not found!', 
         ephemeral: true 
       });
     }
@@ -53,7 +53,7 @@ class ModalSubmitListener extends Listener {
       await airCommand.handleAirQualityAndWeather(interaction, cityName);
     } else {
       await interaction.reply({ 
-        content: '❌ Air command tidak ditemukan!', 
+        content: '❌ Air command not found!', 
         ephemeral: true 
       });
     }

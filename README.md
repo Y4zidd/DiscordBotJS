@@ -7,7 +7,7 @@
 <img src="https://img.shields.io/badge/Framework-Sapphire-blue?style=flat-square"/>
 </div>
 
-Discord bot dengan fitur AI chat dan informasi cuaca/kualitas udara menggunakan Sapphire.js framework.
+Discord bot with AI chat and weather/air quality information features using Sapphire.js framework.
 
 ## ✨ Features
 

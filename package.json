@@ -1,7 +1,7 @@
 {
   "name": "discord-bot-js",
   "version": "1.0.0",
-  "description": "Discord bot menggunakan Sapphire.js",
+  "description": "Discord bot using Sapphire.js",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",

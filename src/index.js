@@ -5,7 +5,7 @@ const { SapphireClient } = require('@sapphire/framework');
 const { GatewayIntentBits, ActivityType } = require('discord.js');
 const config = require('./config');
 
-// Membuat client Sapphire dengan konfigurasi yang diperlukan
+// Create Sapphire client with required configuration
 const client = new SapphireClient({
   intents: [
     GatewayIntentBits.Guilds,
@@ -30,14 +30,14 @@ client.once('ready', () => {
   console.log(`👥 Users: ${client.users.cache.size}`);
 });
 
-// Login dengan token bot
-// PENTING: Jangan pernah commit token ke repository!
-// Gunakan environment variable atau file .env
+// Login with bot token
+// IMPORTANT: Never commit tokens to repository!
+// Use environment variables or .env file
 const token = process.env.DISCORD_TOKEN;
 
 if (!token) {
-  console.error(`${config.emojis.error} DISCORD_TOKEN tidak ditemukan di environment variables!`);
-  console.error('Pastikan Anda sudah membuat file .env dan mengisi DISCORD_TOKEN');
+  console.error(`${config.emojis.error} DISCORD_TOKEN not found in environment variables!`);
+  console.error('Make sure you have created a .env file and filled in DISCORD_TOKEN');
   process.exit(1);
 }
 

@@ -8,7 +8,7 @@ class ChatCommand extends Command {
     super(context, {
       ...options,
       name: 'chat',
-      description: 'Chat dengan AI Gemini'
+      description: 'Chat with Gemini AI'
     });
   }
 
@@ -16,11 +16,11 @@ class ChatCommand extends Command {
     registry.registerChatInputCommand((builder) =>
       builder
         .setName('chat')
-        .setDescription('Chat dengan AI Gemini')
+        .setDescription('Chat with Gemini AI')
         .addStringOption((option) =>
           option
-            .setName('pesan')
-            .setDescription('Pesan untuk AI')
+            .setName('message')
+            .setDescription('Message for AI')
             .setRequired(true)
         )
     );
@@ -28,31 +28,31 @@ class ChatCommand extends Command {
 
   // Slash command
   async chatInputRun(interaction) {
-    const pesan = interaction.options.getString('pesan');
-    await this.handleChat(interaction, pesan);
+    const message = interaction.options.getString('message');
+    await this.handleChat(interaction, message);
   }
 
   // Message command
   async messageRun(message, args) {
-    const pesan = args.rest;
-    if (!pesan) {
-      return message.reply('❌ Silakan masukkan pesan! Contoh: `!chat Halo AI`');
+    const messageText = args.rest;
+    if (!messageText) {
+      return message.reply('❌ Please enter a message! Example: `!chat Hello AI`');
     }
-    await this.handleChat(message, pesan);
+    await this.handleChat(message, messageText);
   }
 
-  async handleChat(context, pesan) {
+  async handleChat(context, messageText) {
     const isInteraction = context.isCommand ? context.isCommand() : false;
     
     try {
-      // Defer reply untuk slash command
+      // Defer reply for slash command
       if (isInteraction) {
         await context.deferReply();
       }
 
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
-        const errorMsg = '❌ API key Gemini tidak ditemukan!';
+        const errorMsg = '❌ Gemini API key not found!';
         return isInteraction ? 
           context.editReply(errorMsg) : 
           context.reply(errorMsg);
@@ -63,14 +63,14 @@ class ChatCommand extends Command {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
       // Generate response
-      const result = await model.generateContent(pesan);
+      const result = await model.generateContent(messageText);
       const response = await result.response;
       const text = response.text();
 
       // Create embed for response
       const embed = new EmbedBuilder()
         .setTitle('🤖 **AI Response**')
-        .setDescription(`**Your Message:** ${pesan}\n\n**AI Reply:**\n${text}`)
+        .setDescription(`**Your Message:** ${messageText}\n\n**AI Reply:**\n${text}`)
         .setColor(config.colors.primary)
         .setFooter({ 
           text: 'Powered by Google Gemini AI',
@@ -85,7 +85,7 @@ class ChatCommand extends Command {
     } catch (error) {
       console.error('Error with Gemini AI:', error);
       
-      const errorMsg = `❌ Terjadi kesalahan saat berkomunikasi dengan AI: ${error.message}`;
+      const errorMsg = `❌ An error occurred while communicating with AI: ${error.message}`;
       return isInteraction ? 
         context.editReply(errorMsg) : 
         context.reply(errorMsg);
