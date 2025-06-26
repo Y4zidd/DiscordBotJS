@@ -17,6 +17,8 @@ Discord bot with AI chat and weather/air quality information features using Sapp
 |    Chat    |      AI Chat with Gemini AI      |   ✅   |
 |    Air     |   Weather & Air Quality Info     |   ✅   |
 |    Help    |   Interactive Command Menu       |   ✅   |
+|  Download  |  Download Videos from TikTok,    |   ✅   |
+|            |   Instagram, and Facebook        |        |
 
 ## 📄 License
 
