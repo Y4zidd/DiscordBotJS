@@ -29,6 +29,9 @@ class HelpMenuListener extends Listener {
         case 'help':
           await this.handleHelp(interaction);
           break;
+        case 'socdl':
+          await this.handleSocdl(interaction);
+          break;
         default:
           await interaction.reply({ 
             content: '❌ Command not recognized!', 
@@ -111,6 +114,26 @@ class HelpMenuListener extends Listener {
         ephemeral: true 
       });
     }
+  }
+
+  async handleSocdl(interaction) {
+    // Create modal for socdl input
+    const modal = new ModalBuilder()
+      .setCustomId('socdl_modal')
+      .setTitle('📥 Download Social Media Video');
+
+    const urlInput = new TextInputBuilder()
+      .setCustomId('socdl_url')
+      .setLabel('Video URL (Instagram, Facebook, TikTok)')
+      .setStyle(TextInputStyle.Short)
+      .setPlaceholder('Paste the video link here...')
+      .setRequired(true)
+      .setMaxLength(500);
+
+    const firstActionRow = new ActionRowBuilder().addComponents(urlInput);
+    modal.addComponents(firstActionRow);
+
+    await interaction.showModal(modal);
   }
 }
 

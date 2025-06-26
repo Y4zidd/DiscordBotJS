@@ -44,6 +44,7 @@ class HelpCommand extends Command {
             '🏓 **Ping** - Check bot latency\n' +
             '💬 **Chat** - AI conversation\n' +
             '🌤️ **Air** - Weather & air quality info\n' +
+            '📥 **Socdl** - Download video from Instagram, Facebook, or TikTok\n' +
             '❓ **Help** - Show this menu',
           inline: false
         },
@@ -83,6 +84,12 @@ class HelpCommand extends Command {
           description: 'Check weather and air quality of a city',
           value: 'air',
           emoji: '🌤️'
+        },
+        {
+          label: 'Socdl - Video Downloader',
+          description: 'Download video from Instagram, Facebook, or TikTok',
+          value: 'socdl',
+          emoji: '📥'
         },
         {
           label: 'Help - Show Menu',

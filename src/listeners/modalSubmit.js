@@ -19,6 +19,9 @@ class ModalSubmitListener extends Listener {
         case 'air_modal':
           await this.handleAirModal(interaction);
           break;
+        case 'socdl_modal':
+          await this.handleSocdlModal(interaction);
+          break;
       }
     } catch (error) {
       console.error('Error handling modal submit:', error);
@@ -55,6 +58,27 @@ class ModalSubmitListener extends Listener {
       await interaction.reply({ 
         content: '❌ Air command not found!', 
         ephemeral: true 
+      });
+    }
+  }
+
+  async handleSocdlModal(interaction) {
+    const url = interaction.fields.getTextInputValue('socdl_url');
+    // Get the socdl command and run it directly
+    const socdlCommand = this.container.stores.get('commands').get('socdl');
+    if (socdlCommand) {
+      // Simulate a slash command interaction by calling the handler
+      // Sapphire's chatInputRun expects a ChatInputCommandInteraction, but we can call the same logic
+      // We'll call the handler and pass the url as if it was a slash command
+      // You may need to adapt socdl.js to support this if it doesn't already
+      interaction.options = {
+        getString: () => url
+      };
+      await socdlCommand.chatInputRun(interaction);
+    } else {
+      await interaction.reply({
+        content: '❌ Socdl command not found!',
+        ephemeral: true
       });
     }
   }
