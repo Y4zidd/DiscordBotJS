@@ -17,8 +17,7 @@
 |    Chat    |      AI Chat with Gemini AI      |   ✅   |
 |    Air     |   Weather & Air Quality Info     |   ✅   |
 |    Help    |   Interactive Command Menu       |   ✅   |
-|  Download  |  Download Videos from TikTok,    |   ✅   |
-|            |   Instagram, and Facebook        |        |
+|  Download  |  Download Videos from TikTok,Instagram, and Facebook     |   ✅   |
 
 ## 📄 License
 
