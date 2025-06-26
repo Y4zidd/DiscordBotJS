@@ -7,7 +7,7 @@ class InfoCommand extends Command {
     super(context, {
       ...options,
       name: 'info',
-      description: 'Menampilkan informasi tentang bot'
+      description: 'Show information about the bot'
     });
   }
 
@@ -17,21 +17,21 @@ class InfoCommand extends Command {
     
     const embed = new EmbedBuilder()
       .setColor(config.colors.primary)
-      .setTitle(`${config.emojis.bot} Informasi Bot`)
+      .setTitle(`${config.emojis.bot} Bot Information`)
       .addFields(
         {
-          name: '📛 Nama Bot',
+          name: '📛 Bot Name',
           value: client.user.tag,
           inline: true
         },
         {
-          name: '🆔 ID Bot',
+          name: '🆔 Bot ID',
           value: client.user.id,
           inline: true
         },
         {
-          name: '🏠 Server',
-          value: `${client.guilds.cache.size} server`,
+          name: '🏠 Servers',
+          value: `${client.guilds.cache.size} servers`,
           inline: true
         },
         {
@@ -52,7 +52,7 @@ class InfoCommand extends Command {
       )
       .setTimestamp()
       .setFooter({
-        text: 'Bot dibuat dengan Sapphire.js'
+        text: 'Bot created with Sapphire.js'
       });
 
     return interaction.reply({ embeds: [embed] });
@@ -64,21 +64,21 @@ class InfoCommand extends Command {
     
     const embed = new EmbedBuilder()
       .setColor(config.colors.primary)
-      .setTitle(`${config.emojis.bot} Informasi Bot`)
+      .setTitle(`${config.emojis.bot} Bot Information`)
       .addFields(
         {
-          name: '📛 Nama Bot',
+          name: '📛 Bot Name',
           value: client.user.tag,
           inline: true
         },
         {
-          name: '🆔 ID Bot',
+          name: '🆔 Bot ID',
           value: client.user.id,
           inline: true
         },
         {
-          name: '🏠 Server',
-          value: `${client.guilds.cache.size} server`,
+          name: '🏠 Servers',
+          value: `${client.guilds.cache.size} servers`,
           inline: true
         },
         {
@@ -99,7 +99,7 @@ class InfoCommand extends Command {
       )
       .setTimestamp()
       .setFooter({
-        text: 'Bot dibuat dengan Sapphire.js'
+        text: 'Bot created with Sapphire.js'
       });
 
     return message.reply({ embeds: [embed] });

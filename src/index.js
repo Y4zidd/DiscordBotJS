@@ -25,7 +25,7 @@ const client = new SapphireClient({
 
 // Event listener ketika bot berhasil login
 client.once('ready', () => {
-  console.log(`${config.emojis.success} ${config.bot.name} berhasil login sebagai ${client.user.tag}!`);
+  console.log(`${config.emojis.success} ${config.bot.name} successfully entered as ${client.user.tag}!`);
   console.log(`🏠 Server: ${client.guilds.cache.size}`);
   console.log(`👥 Users: ${client.users.cache.size}`);
 });

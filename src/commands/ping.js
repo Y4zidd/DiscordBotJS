@@ -6,7 +6,7 @@ class PingCommand extends Command {
     super(context, {
       ...options,
       name: 'ping',
-      description: 'Mengecek latensi bot'
+      description: 'Check bot latency'
     });
   }
 
@@ -22,7 +22,7 @@ class PingCommand extends Command {
 
     return interaction.editReply(
       `Pong! ${config.emojis.ping}\n` +
-      `📡 **Latensi API**: ${diff}ms\n` +
+      `📡 **API Latency**: ${diff}ms\n` +
       `💓 **Heartbeat**: ${ping}ms`
     );
   }
@@ -35,7 +35,7 @@ class PingCommand extends Command {
 
     return msg.edit(
       `Pong! ${config.emojis.ping}\n` +
-      `📡 **Latensi API**: ${diff}ms\n` +
+      `📡 **API Latency**: ${diff}ms\n` +
       `💓 **Heartbeat**: ${ping}ms`
     );
   }

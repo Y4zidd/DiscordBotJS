@@ -8,7 +8,7 @@ class AiCommand extends Command {
     super(context, {
       ...options,
       name: 'ai',
-      description: 'Konfigurasi dan info tentang AI Chat'
+      description: 'Configure and get info about AI Chat'
     });
     
     this.aiHelper = new AIHelper();
@@ -22,16 +22,16 @@ class AiCommand extends Command {
         .addSubcommand((subcommand) =>
           subcommand
             .setName('status')
-            .setDescription('Cek status AI Chat')
+            .setDescription('Check AI Chat status')
         )
         .addSubcommand((subcommand) =>
           subcommand
             .setName('setup')
-            .setDescription('Setup AI dengan API key')
+            .setDescription('Setup AI with API key')
             .addStringOption((option) =>
               option
                 .setName('provider')
-                .setDescription('Pilih AI provider')
+                .setDescription('Choose AI provider')
                 .setRequired(true)
                 .addChoices(
                   { name: 'OpenAI (ChatGPT)', value: 'openai' },
@@ -76,11 +76,11 @@ class AiCommand extends Command {
     const embed = new EmbedBuilder()
       .setColor(config.colors.primary)
       .setTitle(`${config.emojis.bot} AI Chat Status`)
-      .setDescription('Informasi tentang AI Chat bot')
+      .setDescription('Information about AI Chat bot')
       .addFields(
         {
           name: `${config.emojis.success} Status`,
-          value: `AI Chat aktif dengan **${serviceNames[status.service]}**`,
+          value: `AI Chat is active with **${serviceNames[status.service]}**`,
           inline: true
         },
         {
@@ -94,18 +94,18 @@ class AiCommand extends Command {
           inline: true
         },
         {
-          name: `${config.emojis.settings} Cara Menggunakan`,
-          value: '• Mention bot: `@Y4zBot halo`\n• DM bot langsung\n• Sebut nama bot: "Y4zBot apa kabar?"',
+          name: `${config.emojis.settings} How to Use`,
+          value: '• Mention bot: `@Y4zBot hello`\n• DM the bot directly\n• Say the bot\'s name: "Y4zBot how are you?"',
           inline: false
         },
         {
           name: `${config.emojis.warning} Rate Limit`,
-          value: '1 response per 3 detik per user',
+          value: '1 response per 3 seconds per user',
           inline: true
         }
       )
       .setFooter({
-        text: status.service === 'simple' ? 'Gunakan /ai setup untuk upgrade ke AI yang lebih canggih' : 'AI powered chat is active!'
+        text: status.service === 'simple' ? 'Use /ai setup to upgrade to a more advanced AI' : 'AI powered chat is active!'
       })
       .setTimestamp();
 
@@ -120,26 +120,26 @@ class AiCommand extends Command {
     const embed = new EmbedBuilder()
       .setColor(config.colors.warning)
       .setTitle(`${config.emojis.settings} AI Setup Guide`)
-      .setDescription('Cara setup AI yang lebih canggih:')
+      .setDescription('How to setup more advanced AI:')
       .addFields(
         {
           name: `${config.emojis.info} 1. OpenAI (ChatGPT) - Recommended`,
-          value: '• Daftar di https://platform.openai.com\n• Dapatkan API key\n• Tambahkan `OPENAI_API_KEY=your_key` ke .env\n• Restart bot',
+          value: '• Register at https://platform.openai.com\n• Get API key\n• Add `OPENAI_API_KEY=your_key` to .env\n• Restart bot',
           inline: false
         },
         {
           name: `${config.emojis.info} 2. Google Gemini - Free Tier`,
-          value: '• Daftar di https://makersuite.google.com\n• Dapatkan API key\n• Tambahkan `GEMINI_API_KEY=your_key` ke .env\n• Restart bot',
+          value: '• Register at https://makersuite.google.com\n• Get API key\n• Add `GEMINI_API_KEY=your_key` to .env\n• Restart bot',
           inline: false
         },
         {
-          name: `${config.emojis.warning} Biaya`,
-          value: '• OpenAI: ~$0.002 per 1000 tokens\n• Gemini: Gratis sampai 60 requests/menit\n• Simple: Gratis tapi terbatas',
+          name: `${config.emojis.warning} Cost`,
+          value: '• OpenAI: ~$0.002 per 1000 tokens\n• Gemini: Free up to 60 requests/minute\n• Simple: Free but limited',
           inline: false
         }
       )
       .setFooter({
-        text: 'Setelah setup, bot akan otomatis menggunakan AI yang lebih pintar!'
+        text: 'After setup, the bot will automatically use smarter AI!'
       })
       .setTimestamp();
 

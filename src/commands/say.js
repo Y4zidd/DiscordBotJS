@@ -6,11 +6,11 @@ class SayCommand extends Command {
     super(context, {
       ...options,
       name: 'say',
-      description: 'Membuat bot mengatakan sesuatu'
+      description: 'Make the bot say something'
     });
   }
 
-  // Register slash command dengan options
+  // Register slash command with options
   registerApplicationCommands(registry) {
     registry.registerChatInputCommand({
       name: this.name,
@@ -18,7 +18,7 @@ class SayCommand extends Command {
       options: [
         {
           name: 'message',
-          description: 'Pesan yang ingin dikatakan bot',
+          description: 'The message you want the bot to say',
           type: 3, // STRING type
           required: true
         }
@@ -30,16 +30,16 @@ class SayCommand extends Command {
   async chatInputRun(interaction) {
     const message = interaction.options.getString('message');
     
-    // Cek apakah user memiliki permission untuk menggunakan command ini
+    // Check if user has permission to use this command
     if (!interaction.member.permissions.has('ManageMessages')) {
       return interaction.reply({
-        content: '❌ Kamu tidak memiliki permission untuk menggunakan command ini!',
+        content: '❌ You do not have permission to use this command!',
         ephemeral: true
       });
     }
 
     await interaction.reply({
-      content: '✅ Pesan berhasil dikirim!',
+      content: '✅ Message sent successfully!',
       ephemeral: true
     });
 
@@ -48,18 +48,18 @@ class SayCommand extends Command {
 
   // Message command
   async messageRun(message, args) {
-    // Cek apakah user memiliki permission
+    // Check if user has permission
     if (!message.member.permissions.has('ManageMessages')) {
-      return message.reply('❌ Kamu tidak memiliki permission untuk menggunakan command ini!');
+      return message.reply('❌ You do not have permission to use this command!');
     }
 
     const content = args.rest('string');
     
     if (!content) {
-      return message.reply('❌ Silakan berikan pesan yang ingin dikatakan bot!\nContoh: `!say Halo semua!`');
+      return message.reply('❌ Please provide a message for the bot to say!\nExample: `!say Hello everyone!`');
     }
 
-    // Hapus pesan original dan kirim pesan baru
+    // Delete original message and send new one
     await message.delete().catch(() => {});
     return message.channel.send(content);
   }

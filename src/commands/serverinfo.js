@@ -7,7 +7,7 @@ class ServerInfoCommand extends Command {
     super(context, {
       ...options,
       name: 'serverinfo',
-      description: 'Menampilkan informasi tentang server'
+      description: 'Displays information about the server'
     });
   }
 
@@ -19,29 +19,20 @@ class ServerInfoCommand extends Command {
     });
   }
 
-  // Slash command
-  async chatInputRun(interaction) {
-    const guild = interaction.guild;
-    
-    if (!guild) {
-      return interaction.reply({
-        content: `${config.emojis.error} Command ini hanya bisa digunakan di server!`,
-        ephemeral: true
-      });
-    }
-
-    const embed = new EmbedBuilder()
+  // Common function to create embed
+  createServerInfoEmbed(guild, user) {
+    return new EmbedBuilder()
       .setColor(config.colors.primary)
-      .setTitle(`${config.emojis.info} Informasi Server`)
+      .setTitle(`${config.emojis.info} Server Information`)
       .setThumbnail(guild.iconURL({ dynamic: true }))
       .addFields(
         {
-          name: '📛 Nama Server',
+          name: '📛 Server Name',
           value: guild.name,
           inline: true
         },
         {
-          name: '🆔 ID Server',
+          name: '🆔 Server ID',
           value: guild.id,
           inline: true
         },
@@ -56,13 +47,13 @@ class ServerInfoCommand extends Command {
           inline: true
         },
         {
-          name: '📅 Dibuat',
+          name: '📅 Created At',
           value: `<t:${Math.floor(guild.createdTimestamp / 1000)}:F>`,
           inline: true
         },
         {
           name: '🔒 Verification Level',
-          value: guild.verificationLevel.toString(),
+          value: this.formatVerificationLevel(guild.verificationLevel),
           inline: true
         },
         {
@@ -83,78 +74,36 @@ class ServerInfoCommand extends Command {
       )
       .setTimestamp()
       .setFooter({
-        text: `Requested by ${interaction.user.tag}`,
-        iconURL: interaction.user.displayAvatarURL()
+        text: `Requested by ${user.tag}`,
+        iconURL: user.displayAvatarURL()
       });
+  }
 
+  // Common error response
+  getErrorResponse(context) {
+    const content = `${config.emojis.error} This command can only be used in a server!`;
+    return context.reply ? 
+      context.reply({ content, ephemeral: true }) : 
+      context.reply(content);
+  }
+
+  // Slash command
+  async chatInputRun(interaction) {
+    if (!interaction.guild) {
+      return this.getErrorResponse(interaction);
+    }
+    
+    const embed = this.createServerInfoEmbed(interaction.guild, interaction.user);
     return interaction.reply({ embeds: [embed] });
   }
 
   // Message command
   async messageRun(message) {
-    const guild = message.guild;
-    
-    if (!guild) {
-      return message.reply(`${config.emojis.error} Command ini hanya bisa digunakan di server!`);
+    if (!message.guild) {
+      return this.getErrorResponse(message);
     }
-
-    const embed = new EmbedBuilder()
-      .setColor(config.colors.primary)
-      .setTitle(`${config.emojis.info} Informasi Server`)
-      .setThumbnail(guild.iconURL({ dynamic: true }))
-      .addFields(
-        {
-          name: '📛 Nama Server',
-          value: guild.name,
-          inline: true
-        },
-        {
-          name: '🆔 ID Server',
-          value: guild.id,
-          inline: true
-        },
-        {
-          name: '👑 Owner',
-          value: `<@${guild.ownerId}>`,
-          inline: true
-        },
-        {
-          name: '👥 Member Count',
-          value: `${guild.memberCount} members`,
-          inline: true
-        },
-        {
-          name: '📅 Dibuat',
-          value: `<t:${Math.floor(guild.createdTimestamp / 1000)}:F>`,
-          inline: true
-        },
-        {
-          name: '🔒 Verification Level',
-          value: guild.verificationLevel.toString(),
-          inline: true
-        },
-        {
-          name: '💬 Text Channels',
-          value: `${guild.channels.cache.filter(c => c.type === 0).size}`,
-          inline: true
-        },
-        {
-          name: '🔊 Voice Channels',
-          value: `${guild.channels.cache.filter(c => c.type === 2).size}`,
-          inline: true
-        },
-        {
-          name: '📝 Roles',
-          value: `${guild.roles.cache.size}`,
-          inline: true
-        }
-      )
-      .setTimestamp()
-      .setFooter({
-        text: `Requested by ${message.author.tag}`,
-        iconURL: message.author.displayAvatarURL()
-      });
-
+    
+    const embed = this.createServerInfoEmbed(message.guild, message.author);
     return message.reply({ embeds: [embed] });
   }
 }

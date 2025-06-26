@@ -6,42 +6,43 @@ const { REST, Routes } = require('discord.js');
 const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.CLIENT_ID; // Bot's application ID
 
+// Validate environment variables
 if (!token) {
-  console.error('❌ DISCORD_TOKEN tidak ditemukan di environment variables!');
+  console.error('❌ DISCORD_TOKEN not found in environment variables!');
   process.exit(1);
 }
 
 if (!clientId) {
-  console.error('❌ CLIENT_ID tidak ditemukan di environment variables!');
-  console.error('Tambahkan CLIENT_ID (Application ID bot) ke file .env Anda');
+  console.error('❌ CLIENT_ID not found in environment variables!');
+  console.error('Please add CLIENT_ID (your bot\'s Application ID) to your .env file');
   process.exit(1);
 }
 
-// Daftar commands secara manual untuk menghindari error instansiasi
+// Command definitions
 const commands = [
   {
     name: 'ping',
-    description: 'Cek latensi bot'
+    description: 'Check bot latency'
   },
   {
     name: 'info',
-    description: 'Tampilkan informasi bot'
+    description: 'Display bot information'
   },
   {
     name: 'help',
-    description: 'Tampilkan daftar semua command'
+    description: 'Show list of available commands'
   },
   {
     name: 'serverinfo',
-    description: 'Tampilkan informasi server'
+    description: 'Display server information'
   },
   {
     name: 'userinfo',
-    description: 'Tampilkan informasi user',
+    description: 'Display user information',
     options: [
       {
         name: 'user',
-        description: 'User yang ingin dilihat informasinya',
+        description: 'User to view information about',
         type: 6, // USER type
         required: false
       }
@@ -49,11 +50,11 @@ const commands = [
   },
   {
     name: 'say',
-    description: 'Buat bot mengatakan sesuatu',
+    description: 'Make the bot say something',
     options: [
       {
         name: 'message',
-        description: 'Pesan yang ingin dikatakan bot',
+        description: 'Message for the bot to say',
         type: 3, // STRING type
         required: true
       }
@@ -61,21 +62,21 @@ const commands = [
   },
   {
     name: 'ai',
-    description: 'Konfigurasi dan info tentang AI Chat',
+    description: 'Configure and get info about AI Chat',
     options: [
       {
         name: 'status',
-        description: 'Cek status AI Chat',
+        description: 'Check AI Chat status',
         type: 1 // SUB_COMMAND type
       },
       {
         name: 'setup',
-        description: 'Setup AI dengan API key',
+        description: 'Setup AI with API key',
         type: 1, // SUB_COMMAND type
         options: [
           {
             name: 'provider',
-            description: 'Pilih AI provider',
+            description: 'Select AI provider',
             type: 3, // STRING type
             required: true,
             choices: [
@@ -90,11 +91,11 @@ const commands = [
   },
   {
     name: 'airpollution',
-    description: 'Tampilkan informasi kualitas udara suatu kota menggunakan data real-time',
+    description: 'Show real-time air quality information for a city',
     options: [
       {
         name: 'city',
-        description: 'Nama kota yang ingin dicek kualitas udaranya',
+        description: 'City to check air quality for',
         type: 3, // STRING type
         required: true
       }
@@ -104,7 +105,7 @@ const commands = [
 
 console.log(`✅ Prepared ${commands.length} commands for registration`);
 
-// REST instance
+// Initialize REST client
 const rest = new REST({ version: '10' }).setToken(token);
 
 // Deploy commands
@@ -112,7 +113,7 @@ const rest = new REST({ version: '10' }).setToken(token);
   try {
     console.log(`🚀 Started refreshing ${commands.length} application (/) commands.`);
 
-    // Register commands globally (untuk semua server)
+    // Register commands globally (for all servers)
     const data = await rest.put(
       Routes.applicationCommands(clientId),
       { body: commands }
@@ -121,5 +122,6 @@ const rest = new REST({ version: '10' }).setToken(token);
     console.log(`✅ Successfully reloaded ${data.length} application (/) commands.`);
   } catch (error) {
     console.error('❌ Error registering commands:', error);
+    process.exit(1);
   }
 })();
