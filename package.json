@@ -14,11 +14,7 @@
     "btch-downloader": "^4.0.15",
     "discord.js": "^14.14.1",
     "dotenv": "^16.5.0",
-    "node-fetch": "^2.7.0",
-    "openweathermap": "^1.0.0",
-    "priyansh-ig-downloader": "^2.0.4",
-    "test-downloader": "^1.0.5",
-    "trs-media-downloader": "^1.0.2"
+    "openweathermap": "^1.0.0"
   },
   "engines": {
     "node": ">=18.0.0"

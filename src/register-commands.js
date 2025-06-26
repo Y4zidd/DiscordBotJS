@@ -89,6 +89,18 @@ const commands = [
       }
     ]
   },
+  {
+    name: 'socdl',
+    description: 'Download video from Instagram or Facebook (btch-downloader)',
+    options: [
+      {
+        name: 'url',
+        description: 'Instagram/Facebook video URL',
+        type: 3, // STRING type
+        required: true
+      }
+    ]
+  },
 ];
 
 console.log(`✅ Prepared ${commands.length} commands for registration`);
