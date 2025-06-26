@@ -2,7 +2,7 @@
 
 <div align="center">
 <img src="https://img.shields.io/badge/Node-%3E%3D%2020-43853D?style=flat-square&logo=node.js&logoColor=white"/>
-<img src="https://img.shields.io/badge/❤️Maintened-Yes-blue.svg?style=flat-square"/>
+<img src="https://img.shields.io/badge/❤️Maintened-Yes-blue.svg?style=flat-square"/> <br>
 <img src="https://img.shields.io/badge/Discord.js-v14-5865F2?style=flat-square&logo=discord&logoColor=white"/>
 <img src="https://img.shields.io/badge/Framework-Sapphire-blue?style=flat-square"/>
 </div>
