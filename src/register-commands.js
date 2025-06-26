@@ -89,18 +89,6 @@ const commands = [
       }
     ]
   },
-  {
-    name: 'airpollution',
-    description: 'Show real-time air quality information for a city',
-    options: [
-      {
-        name: 'city',
-        description: 'City to check air quality for',
-        type: 3, // STRING type
-        required: true
-      }
-    ]
-  }
 ];
 
 console.log(`✅ Prepared ${commands.length} commands for registration`);
