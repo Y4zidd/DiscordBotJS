@@ -91,7 +91,7 @@ const commands = [
   },
   {
     name: 'socdl',
-    description: 'Download video from Instagram or Facebook (btch-downloader)',
+    description: 'Download video from Instagram or Facebook',
     options: [
       {
         name: 'url',

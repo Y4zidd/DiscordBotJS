@@ -4,7 +4,7 @@ const { Command } = require('@sapphire/framework');
 const { SlashCommandBuilder } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-const { fbdown, igdl } = require('btch-downloader');
+const { fbdown, igdl, ttdl } = require('btch-downloader');
 const axios = require('axios');
 
 const TMP_DIR = path.join(__dirname, '../../tmp');
@@ -70,8 +70,18 @@ class SocdlCommand extends Command {
         } else {
           throw new Error('No downloadable Instagram video found.');
         }
+      } else if (url.includes('tiktok.com')) {
+        // TikTok
+        const data = await ttdl(url);
+        let tiktokUrl = data.nowm;
+        if (!tiktokUrl && Array.isArray(data.video) && data.video.length > 0) {
+          tiktokUrl = data.video[0];
+        }
+        videoUrl = tiktokUrl;
+        fileLabel = 'tiktok';
+        if (!videoUrl) throw new Error('No downloadable TikTok video found.');
       } else {
-        throw new Error('URL not recognized. Only Instagram and Facebook are supported.');
+        throw new Error('URL not recognized. Only Instagram, Facebook, and TikTok are supported.');
       }
       const filename = `${fileLabel}_${Date.now()}.mp4`;
       outputPath = path.join(TMP_DIR, filename);
