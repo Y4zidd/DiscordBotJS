@@ -10,10 +10,12 @@ const client = new SapphireClient({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers // Required for member join events
   ],
   loadMessageCommandListeners: true, // Untuk message commands
   defaultPrefix: config.bot.prefix, // Prefix dari config
+  loadSubfolders: true, // Agar semua listener di subfolder listeners otomatis ter-load
   presence: {
     activities: [{
       name: config.bot.presence.activity,

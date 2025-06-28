@@ -12,6 +12,7 @@
     "@google/generative-ai": "^0.24.1",
     "@sapphire/framework": "^5.3.6",
     "btch-downloader": "^4.0.15",
+    "canvas": "^3.1.2",
     "discord.js": "^14.14.1",
     "dotenv": "^16.5.0",
     "openweathermap": "^1.0.0"

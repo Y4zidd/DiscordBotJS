@@ -107,31 +107,25 @@ class HelpMenuListener extends Listener {
   }
 
   async handleHelp(interaction) {
-    // Get the help command and run it
-    const helpCommand = this.container.stores.get('commands').get('help');
-    if (helpCommand) {
-      await helpCommand.showHelpMenu(interaction);
-    } else {
-      await interaction.reply({ 
-        content: 'Help command not found!', 
-        ephemeral: true 
-      });
-    }
+    await interaction.reply({
+      content: 'Help menu is already open.',
+      ephemeral: true
+    });
   }
 
   async handleSocdl(interaction) {
     // Create modal for socdl input
     const modal = new ModalBuilder()
       .setCustomId('socdl_modal')
-      .setTitle('Download Social Media Video');
+      .setTitle('Download Video (IG/FB/TT)');
 
     const urlInput = new TextInputBuilder()
       .setCustomId('socdl_url')
-      .setLabel('Video URL (Instagram, Facebook, TikTok)')
+      .setLabel('Video URL')
       .setStyle(TextInputStyle.Short)
-      .setPlaceholder('Paste the video link here...')
+      .setPlaceholder('Paste Instagram/Facebook/TikTok URL here')
       .setRequired(true)
-      .setMaxLength(500);
+      .setMaxLength(300);
 
     const firstActionRow = new ActionRowBuilder().addComponents(urlInput);
     modal.addComponents(firstActionRow);
@@ -147,9 +141,9 @@ class HelpMenuListener extends Listener {
 
     const amountInput = new TextInputBuilder()
       .setCustomId('purge_amount')
-      .setLabel('Number of messages to delete (max 100)')
+      .setLabel('Number of messages to delete (1-100)')
       .setStyle(TextInputStyle.Short)
-      .setPlaceholder('e.g. 10')
+      .setPlaceholder('Example: 10')
       .setRequired(true)
       .setMaxLength(3);
 

@@ -214,8 +214,7 @@ class AirCommand extends Command {
           }
         )
         .setFooter({ 
-          text: `📡 Data from OpenWeatherMap API`, 
-          iconURL: 'https://openweathermap.org/img/wn/10d.png'
+          text: `Data from OpenWeatherMap`
         })
         .setTimestamp();
 
@@ -226,7 +225,7 @@ class AirCommand extends Command {
     } catch (error) {
       console.error('Error fetching air quality and weather data:', error);
       
-      const errorMsg = `❌ An error occurred while fetching data: ${error.message}`;
+      const errorMsg = `An error occurred while fetching data: ${error.message}`;
       return isInteraction ? 
         context.editReply(errorMsg) : 
         context.reply(errorMsg);
