@@ -46,7 +46,8 @@ class HelpCommand extends Command {
             'Air - Weather & air quality info\n' +
             'Socdl - Download video from Instagram, Facebook, or TikTok\n' +
             'Purge - Bulk delete messages in a channel\n' +
-            'Help - Show this menu',
+            'Help - Show this menu\n' +
+            'manga - Search manga from MangaDex',
           inline: false
         },
         {
@@ -97,6 +98,11 @@ class HelpCommand extends Command {
           label: 'Help - Show Menu',
           description: 'Show this help menu again',
           value: 'help'
+        },
+        {
+          label: 'Manga - Search Manga',
+          description: 'Search manga from MangaDex with interactive collage & unlimited pagination',
+          value: 'manga'
         }
       ]);
 

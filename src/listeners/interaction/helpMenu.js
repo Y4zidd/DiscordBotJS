@@ -35,6 +35,9 @@ class HelpMenuListener extends Listener {
         case 'purge':
           await this.handlePurge(interaction);
           break;
+        case 'manga':
+          await this.handleManga(interaction);
+          break;
         default:
           await interaction.reply({ 
             content: 'Command not recognized!', 
@@ -148,6 +151,26 @@ class HelpMenuListener extends Listener {
       .setMaxLength(3);
 
     const firstActionRow = new ActionRowBuilder().addComponents(amountInput);
+    modal.addComponents(firstActionRow);
+
+    await interaction.showModal(modal);
+  }
+
+  async handleManga(interaction) {
+    // Create modal for manga search input
+    const modal = new ModalBuilder()
+      .setCustomId('manga_modal')
+      .setTitle('Search Manga (MangaDex)');
+
+    const mangaInput = new TextInputBuilder()
+      .setCustomId('manga_title')
+      .setLabel('Manga Title')
+      .setStyle(TextInputStyle.Short)
+      .setPlaceholder('Example: One Piece, Naruto, etc.')
+      .setRequired(true)
+      .setMaxLength(100);
+
+    const firstActionRow = new ActionRowBuilder().addComponents(mangaInput);
     modal.addComponents(firstActionRow);
 
     await interaction.showModal(modal);

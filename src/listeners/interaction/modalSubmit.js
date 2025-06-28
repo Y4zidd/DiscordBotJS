@@ -25,6 +25,9 @@ class ModalSubmitListener extends Listener {
         case 'purge_modal':
           await this.handlePurgeModal(interaction);
           break;
+        case 'manga_modal':
+          await this.handleMangaModal(interaction);
+          break;
       }
     } catch (error) {
       console.error('Error handling modal submit:', error);
@@ -106,6 +109,23 @@ class ModalSubmitListener extends Listener {
     } else {
       await interaction.reply({
         content: 'Purge command not found!',
+        ephemeral: true
+      });
+    }
+  }
+
+  async handleMangaModal(interaction) {
+    const mangaTitle = interaction.fields.getTextInputValue('manga_title');
+    // Get the manga command and run it directly
+    const mangaCommand = this.container.stores.get('commands').get('manga');
+    if (mangaCommand) {
+      interaction.options = {
+        getString: () => mangaTitle
+      };
+      await mangaCommand.chatInputRun(interaction);
+    } else {
+      await interaction.reply({
+        content: 'Manga command not found!',
         ephemeral: true
       });
     }
