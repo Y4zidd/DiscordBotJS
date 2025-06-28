@@ -49,16 +49,26 @@ class AiCommand extends Command {
     if (subcommand === 'status') {
       return this.handleStatus(interaction);
     } else if (subcommand === 'setup') {
+      // Only allow admins (ManageGuild) to use setup
+      if (!interaction.member.permissions.has('ManageGuild')) {
+        return interaction.reply({
+          content: 'Only server admins can use /ai setup.',
+          ephemeral: true
+        });
+      }
       return this.handleSetup(interaction);
     }
   }
 
   async messageRun(message, args) {
     const subcommand = args.pick('string').catch(() => null);
-    
     if (subcommand === 'status' || !subcommand) {
       return this.handleStatus(message);
     } else if (subcommand === 'setup') {
+      // Only allow admins (ManageGuild) to use setup
+      if (!message.member.permissions.has('ManageGuild')) {
+        return message.reply('Only server admins can use !ai setup.');
+      }
       return this.handleSetup(message);
     }
   }
