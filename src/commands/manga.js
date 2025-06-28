@@ -110,6 +110,24 @@ async function sendMangaPage(interaction, title, userId, page, allData, isInitia
   }
 }
 
+// Helper: Fetch all manga results from MangaDex (pagination, no limit)
+async function fetchAllMangaResults(title) {
+  const allData = [];
+  let offset = 0;
+  const limit = 32; // MangaDex default page size
+  let total = 0;
+  do {
+    const url = `https://api.mangadex.org/manga?title=${encodeURIComponent(title)}&limit=${limit}&offset=${offset}&availableTranslatedLanguage[]=en&includes[]=cover_art`;
+    const response = await fetch(url);
+    const data = await response.json();
+    if (!data.data) break;
+    allData.push(...data.data);
+    total = data.total || allData.length;
+    offset += limit;
+  } while (allData.length < total);
+  return allData;
+}
+
 class MangaCommand extends Command {
   constructor(context, options) {
     super(context, {
@@ -138,17 +156,13 @@ class MangaCommand extends Command {
     const title = interaction.options.getString('title');
     const userId = interaction.user.id;
     try {
-      // Query MangaDex REST API v5 (get up to 60 results for pagination)
-      const url = `https://api.mangadex.org/manga?title=${encodeURIComponent(title)}&limit=60&availableTranslatedLanguage[]=en&includes[]=cover_art`;
-      const response = await fetch(url);
-      const data = await response.json();
-      if (!data.data || !data.data.length) {
+      // Fetch all results from MangaDex (no limit)
+      const allResults = await fetchAllMangaResults(title);
+      if (!allResults.length) {
         return interaction.editReply('No manga found with that title.');
       }
-      // Cache results for this user/query
-      mangaCache[`${userId}_${title}`] = data.data;
-      // Show first page
-      return sendMangaPage(interaction, title, userId, 0, data.data, true);
+      mangaCache[`${userId}_${title}`] = allResults;
+      return sendMangaPage(interaction, title, userId, 0, allResults, true);
     } catch (err) {
       console.error('MangaDex REST API error:', err);
       return interaction.editReply('Error fetching manga info.');
