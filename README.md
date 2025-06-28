@@ -20,6 +20,7 @@
 |  Download  |  Download Videos from TikTok, Instagram, Facebook |   ✅   |
 |   Purge    |   Bulk Delete Messages           |   ✅   |
 |  Welcome/Goodbye | Custom image for member join/leave |   ✅   |
+|   Manga    |  Search MangaDex, interactive collage & pagination |   ✅   |
 
 ## 🚀 Getting Started
 1. Clone this repo
