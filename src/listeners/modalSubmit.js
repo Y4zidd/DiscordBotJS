@@ -22,11 +22,14 @@ class ModalSubmitListener extends Listener {
         case 'socdl_modal':
           await this.handleSocdlModal(interaction);
           break;
+        case 'purge_modal':
+          await this.handlePurgeModal(interaction);
+          break;
       }
     } catch (error) {
       console.error('Error handling modal submit:', error);
       await interaction.reply({ 
-        content: '❌ An error occurred while processing input!', 
+        content: 'An error occurred while processing input!', 
         ephemeral: true 
       });
     }
@@ -41,7 +44,7 @@ class ModalSubmitListener extends Listener {
       await chatCommand.handleChat(interaction, chatMessage);
     } else {
       await interaction.reply({ 
-        content: '❌ Chat command not found!', 
+        content: 'Chat command not found!', 
         ephemeral: true 
       });
     }
@@ -56,7 +59,7 @@ class ModalSubmitListener extends Listener {
       await airCommand.handleAirQualityAndWeather(interaction, cityName);
     } else {
       await interaction.reply({ 
-        content: '❌ Air command not found!', 
+        content: 'Air command not found!', 
         ephemeral: true 
       });
     }
@@ -77,7 +80,32 @@ class ModalSubmitListener extends Listener {
       await socdlCommand.chatInputRun(interaction);
     } else {
       await interaction.reply({
-        content: '❌ Socdl command not found!',
+        content: 'Socdl command not found!',
+        ephemeral: true
+      });
+    }
+  }
+
+  async handlePurgeModal(interaction) {
+    const amountStr = interaction.fields.getTextInputValue('purge_amount');
+    const amount = parseInt(amountStr, 10);
+    if (isNaN(amount) || amount < 1 || amount > 100) {
+      await interaction.reply({
+        content: 'Please enter a valid number between 1 and 100.',
+        ephemeral: true
+      });
+      return;
+    }
+    // Get the purge command and run it directly
+    const purgeCommand = this.container.stores.get('commands').get('purge');
+    if (purgeCommand) {
+      interaction.options = {
+        getInteger: () => amount
+      };
+      await purgeCommand.chatInputRun(interaction);
+    } else {
+      await interaction.reply({
+        content: 'Purge command not found!',
         ephemeral: true
       });
     }

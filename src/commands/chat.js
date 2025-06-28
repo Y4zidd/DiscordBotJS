@@ -36,7 +36,7 @@ class ChatCommand extends Command {
   async messageRun(message, args) {
     const messageText = args.rest;
     if (!messageText) {
-      return message.reply('❌ Please enter a message! Example: `!chat Hello AI`');
+      return message.reply('Please enter a message! Example: `!chat Hello AI`');
     }
     await this.handleChat(message, messageText);
   }
@@ -52,7 +52,7 @@ class ChatCommand extends Command {
 
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
-        const errorMsg = '❌ Gemini API key not found!';
+        const errorMsg = 'Gemini API key not found!';
         return isInteraction ? 
           context.editReply(errorMsg) : 
           context.reply(errorMsg);
@@ -69,7 +69,7 @@ class ChatCommand extends Command {
 
       // Create embed for response
       const embed = new EmbedBuilder()
-        .setTitle('🤖 **AI Response**')
+        .setTitle('**AI Response**')
         .setDescription(`**Your Message:** ${messageText}\n\n**AI Reply:**\n${text}`)
         .setColor(config.colors.primary)
         .setFooter({ 
@@ -85,7 +85,7 @@ class ChatCommand extends Command {
     } catch (error) {
       console.error('Error with Gemini AI:', error);
       
-      const errorMsg = `❌ An error occurred while communicating with AI: ${error.message}`;
+      const errorMsg = `An error occurred while communicating with AI: ${error.message}`;
       return isInteraction ? 
         context.editReply(errorMsg) : 
         context.reply(errorMsg);

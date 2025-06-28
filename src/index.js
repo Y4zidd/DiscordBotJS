@@ -25,9 +25,9 @@ const client = new SapphireClient({
 
 // Event listener ketika bot berhasil login
 client.once('ready', () => {
-  console.log(`${config.emojis.success} ${config.bot.name} successfully entered as ${client.user.tag}!`);
-  console.log(`🏠 Server: ${client.guilds.cache.size}`);
-  console.log(`👥 Users: ${client.users.cache.size}`);
+  console.log(`${config.bot.name} successfully entered as ${client.user.tag}!`);
+  console.log(`Server: ${client.guilds.cache.size}`);
+  console.log(`Users: ${client.users.cache.size}`);
 });
 
 // Login with bot token
@@ -36,7 +36,7 @@ client.once('ready', () => {
 const token = process.env.DISCORD_TOKEN;
 
 if (!token) {
-  console.error(`${config.emojis.error} DISCORD_TOKEN not found in environment variables!`);
+  console.error(`DISCORD_TOKEN not found in environment variables!`);
   console.error('Make sure you have created a .env file and filled in DISCORD_TOKEN');
   process.exit(1);
 }

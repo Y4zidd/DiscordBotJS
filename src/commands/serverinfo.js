@@ -23,51 +23,51 @@ class ServerInfoCommand extends Command {
   createServerInfoEmbed(guild, user) {
     return new EmbedBuilder()
       .setColor(config.colors.primary)
-      .setTitle(`${config.emojis.info} Server Information`)
+      .setTitle(`Server Information`)
       .setThumbnail(guild.iconURL({ dynamic: true }))
       .addFields(
         {
-          name: '📛 Server Name',
+          name: 'Server Name',
           value: guild.name,
           inline: true
         },
         {
-          name: '🆔 Server ID',
+          name: 'Server ID',
           value: guild.id,
           inline: true
         },
         {
-          name: '👑 Owner',
+          name: 'Owner',
           value: `<@${guild.ownerId}>`,
           inline: true
         },
         {
-          name: '👥 Member Count',
+          name: 'Member Count',
           value: `${guild.memberCount} members`,
           inline: true
         },
         {
-          name: '📅 Created At',
+          name: 'Created At',
           value: `<t:${Math.floor(guild.createdTimestamp / 1000)}:F>`,
           inline: true
         },
         {
-          name: '🔒 Verification Level',
+          name: 'Verification Level',
           value: this.formatVerificationLevel(guild.verificationLevel),
           inline: true
         },
         {
-          name: '💬 Text Channels',
+          name: 'Text Channels',
           value: `${guild.channels.cache.filter(c => c.type === 0).size}`,
           inline: true
         },
         {
-          name: '🔊 Voice Channels',
+          name: 'Voice Channels',
           value: `${guild.channels.cache.filter(c => c.type === 2).size}`,
           inline: true
         },
         {
-          name: '📝 Roles',
+          name: 'Roles',
           value: `${guild.roles.cache.size}`,
           inline: true
         }

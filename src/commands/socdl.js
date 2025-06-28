@@ -40,7 +40,7 @@ class SocdlCommand extends Command {
     } catch (err) {
       // If we can't get the URL, reply immediately
       if (!interaction.deferred && !interaction.replied) {
-        await interaction.reply('❌ Failed to read the URL.');
+        await interaction.reply('Failed to read the URL.');
       }
       return;
     }
@@ -53,7 +53,7 @@ class SocdlCommand extends Command {
     let outputPath = null;
     let fileLabel = null;
     try {
-      await interaction.editReply('⏳ Downloading video, please wait...');
+      await interaction.editReply('Downloading video, please wait...');
       let videoUrl = null;
       if (url.includes('facebook.com') || url.includes('fb.watch')) {
         // Facebook
@@ -98,18 +98,18 @@ class SocdlCommand extends Command {
       });
       const stats = fs.statSync(outputPath);
       if (stats.size > 25 * 1024 * 1024) {
-        await interaction.editReply('❌ File is too large (>25MB), cannot be sent to Discord.');
+        await interaction.editReply('File is too large (>25MB), cannot be sent to Discord.');
         fs.unlinkSync(outputPath);
         return;
       }
       await interaction.editReply({
-        content: `✅ Download successful!`,
+        content: `Download successful!`,
         files: [outputPath]
       });
       fs.unlinkSync(outputPath);
     } catch (err) {
       try {
-        await interaction.editReply('❌ Download failed: ' + err.message);
+        await interaction.editReply('Download failed: ' + err.message);
       } catch (e) {
         // If editReply fails, log the error but don't throw
         console.error('Failed to editReply:', e);

@@ -33,13 +33,13 @@ class SayCommand extends Command {
     // Check if user has permission to use this command
     if (!interaction.member.permissions.has('ManageMessages')) {
       return interaction.reply({
-        content: '❌ You do not have permission to use this command!',
+        content: 'You do not have permission to use this command!',
         ephemeral: true
       });
     }
 
     await interaction.reply({
-      content: '✅ Message sent successfully!',
+      content: 'Message sent successfully!',
       ephemeral: true
     });
 
@@ -50,13 +50,13 @@ class SayCommand extends Command {
   async messageRun(message, args) {
     // Check if user has permission
     if (!message.member.permissions.has('ManageMessages')) {
-      return message.reply('❌ You do not have permission to use this command!');
+      return message.reply('You do not have permission to use this command!');
     }
 
     const content = args.rest('string');
     
     if (!content) {
-      return message.reply('❌ Please provide a message for the bot to say!\nExample: `!say Hello everyone!`');
+      return message.reply('Please provide a message for the bot to say!\nExample: `!say Hello everyone!`');
     }
 
     // Delete original message and send new one

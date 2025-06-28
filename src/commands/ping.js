@@ -21,9 +21,9 @@ class PingCommand extends Command {
     const ping = Math.round(this.container.client.ws.ping);
 
     return interaction.editReply(
-      `Pong! ${config.emojis.ping}\n` +
-      `📡 **API Latency**: ${diff}ms\n` +
-      `💓 **Heartbeat**: ${ping}ms`
+      `Pong!\n` +
+      `API Latency: ${diff}ms\n` +
+      `Heartbeat: ${ping}ms`
     );
   }
 
@@ -34,9 +34,9 @@ class PingCommand extends Command {
     const ping = Math.round(this.container.client.ws.ping);
 
     return msg.edit(
-      `Pong! ${config.emojis.ping}\n` +
-      `📡 **API Latency**: ${diff}ms\n` +
-      `💓 **Heartbeat**: ${ping}ms`
+      `Pong!\n` +
+      `API Latency: ${diff}ms\n` +
+      `Heartbeat: ${ping}ms`
     );
   }
 }

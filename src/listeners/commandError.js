@@ -10,9 +10,9 @@ class CommandErrorListener extends Listener {
   }
 
   run(error, { command, message, interaction }) {
-    console.error(`❌ Error in command ${command.name}:`, error);
+    console.error(`Error in command ${command.name}:`, error);
     
-    const errorMessage = '❌ Terjadi error saat menjalankan command ini!';
+    const errorMessage = 'Terjadi error saat menjalankan command ini!';
     
     if (interaction) {
       // Error di slash command

@@ -25,13 +25,13 @@ module.exports = {
 
   // Emojis
   emojis: {
-    success: '✅',
-    error: '❌',
-    warning: '⚠️',
-    info: 'ℹ️',
-    ping: '🏓',
-    bot: '🤖',
-    loading: '⏳'
+    success: '',
+    error: '',
+    warning: '',
+    info: '',
+    ping: '',
+    bot: '',
+    loading: ''
   },
 
   // Links

@@ -8,12 +8,12 @@ const clientId = process.env.CLIENT_ID; // Bot's application ID
 
 // Validate environment variables
 if (!token) {
-  console.error('❌ DISCORD_TOKEN not found in environment variables!');
+  console.error('DISCORD_TOKEN not found in environment variables!');
   process.exit(1);
 }
 
 if (!clientId) {
-  console.error('❌ CLIENT_ID not found in environment variables!');
+  console.error('CLIENT_ID not found in environment variables!');
   console.error('Please add CLIENT_ID (your bot\'s Application ID) to your .env file');
   process.exit(1);
 }
@@ -101,9 +101,21 @@ const commands = [
       }
     ]
   },
+  {
+    name: 'purge',
+    description: 'Bulk delete messages in this channel',
+    options: [
+      {
+        name: 'amount',
+        description: 'Number of messages to delete (max 100)',
+        type: 4, // INTEGER type
+        required: true
+      }
+    ]
+  },
 ];
 
-console.log(`✅ Prepared ${commands.length} commands for registration`);
+console.log(`Prepared ${commands.length} commands for registration`);
 
 // Initialize REST client
 const rest = new REST({ version: '10' }).setToken(token);
@@ -111,7 +123,7 @@ const rest = new REST({ version: '10' }).setToken(token);
 // Deploy commands
 (async () => {
   try {
-    console.log(`🚀 Started refreshing ${commands.length} application (/) commands.`);
+    console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
     // Register commands globally (for all servers)
     const data = await rest.put(
@@ -119,9 +131,9 @@ const rest = new REST({ version: '10' }).setToken(token);
       { body: commands }
     );
 
-    console.log(`✅ Successfully reloaded ${data.length} application (/) commands.`);
+    console.log(`Successfully reloaded ${data.length} application (/) commands.`);
   } catch (error) {
-    console.error('❌ Error registering commands:', error);
+    console.error('Error registering commands:', error);
     process.exit(1);
   }
 })();

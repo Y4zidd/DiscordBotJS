@@ -34,22 +34,23 @@ class HelpCommand extends Command {
 
     // Main help embed
     const helpEmbed = new EmbedBuilder()
-      .setTitle('🤖 **Bot Command Menu**')
+      .setTitle('Bot Command Menu')
       .setDescription('Select a command from the dropdown menu below to use it directly!')
       .setColor(config.colors.primary)
       .addFields(
         {
-          name: '📋 **Available Commands**',
+          name: 'Available Commands',
           value: 
-            '🏓 **Ping** - Check bot latency\n' +
-            '💬 **Chat** - AI conversation\n' +
-            '🌤️ **Air** - Weather & air quality info\n' +
-            '📥 **Socdl** - Download video from Instagram, Facebook, or TikTok\n' +
-            '❓ **Help** - Show this menu',
+            'Ping - Check bot latency\n' +
+            'Chat - AI conversation\n' +
+            'Air - Weather & air quality info\n' +
+            'Socdl - Download video from Instagram, Facebook, or TikTok\n' +
+            'Purge - Bulk delete messages in a channel\n' +
+            'Help - Show this menu',
           inline: false
         },
         {
-          name: '💡 **How to Use**',
+          name: 'How to Use',
           value: 'Select a command from the dropdown menu below, or type manually:\n' +
                  '• Slash commands: `/ping`, `/chat`, `/air`\n' +
                  '• Message commands: `!ping`, `!chat`, `!air`',
@@ -65,37 +66,37 @@ class HelpCommand extends Command {
     // Create dropdown menu
     const selectMenu = new StringSelectMenuBuilder()
       .setCustomId('help_command_select')
-      .setPlaceholder('🔽 Select the command you want to use...')
+      .setPlaceholder('Select the command you want to use...')
       .addOptions([
         {
           label: 'Ping - Check Latency',
           description: 'Check bot latency and connection status',
-          value: 'ping',
-          emoji: '🏓'
+          value: 'ping'
         },
         {
           label: 'Chat - AI Conversation', 
           description: 'Start conversation with Gemini AI',
-          value: 'chat',
-          emoji: '💬'
+          value: 'chat'
         },
         {
           label: 'Air - Weather & Air Quality',
           description: 'Check weather and air quality of a city',
-          value: 'air',
-          emoji: '🌤️'
+          value: 'air'
         },
         {
           label: 'Socdl - Video Downloader',
           description: 'Download video from Instagram, Facebook, or TikTok',
-          value: 'socdl',
-          emoji: '📥'
+          value: 'socdl'
+        },
+        {
+          label: 'Purge - Bulk Delete Messages',
+          description: 'Bulk delete messages in this channel',
+          value: 'purge'
         },
         {
           label: 'Help - Show Menu',
           description: 'Show this help menu again',
-          value: 'help',
-          emoji: '❓'
+          value: 'help'
         }
       ]);
 

@@ -17,35 +17,35 @@ class InfoCommand extends Command {
     
     const embed = new EmbedBuilder()
       .setColor(config.colors.primary)
-      .setTitle(`${config.emojis.bot} Bot Information`)
+      .setTitle(`Bot Information`)
       .addFields(
         {
-          name: '📛 Bot Name',
+          name: 'Bot Name',
           value: client.user.tag,
           inline: true
         },
         {
-          name: '🆔 Bot ID',
+          name: 'Bot ID',
           value: client.user.id,
           inline: true
         },
         {
-          name: '🏠 Servers',
+          name: 'Servers',
           value: `${client.guilds.cache.size} servers`,
           inline: true
         },
         {
-          name: '👥 Users',
+          name: 'Users',
           value: `${client.users.cache.size} users`,
           inline: true
         },
         {
-          name: '⚡ Framework',
+          name: 'Framework',
           value: 'Sapphire.js',
           inline: true
         },
         {
-          name: '🟢 Status',
+          name: 'Status',
           value: 'Online',
           inline: true
         }
@@ -64,35 +64,35 @@ class InfoCommand extends Command {
     
     const embed = new EmbedBuilder()
       .setColor(config.colors.primary)
-      .setTitle(`${config.emojis.bot} Bot Information`)
+      .setTitle(`Bot Information`)
       .addFields(
         {
-          name: '📛 Bot Name',
+          name: 'Bot Name',
           value: client.user.tag,
           inline: true
         },
         {
-          name: '🆔 Bot ID',
+          name: 'Bot ID',
           value: client.user.id,
           inline: true
         },
         {
-          name: '🏠 Servers',
+          name: 'Servers',
           value: `${client.guilds.cache.size} servers`,
           inline: true
         },
         {
-          name: '👥 Users',
+          name: 'Users',
           value: `${client.users.cache.size} users`,
           inline: true
         },
         {
-          name: '⚡ Framework',
+          name: 'Framework',
           value: 'Sapphire.js',
           inline: true
         },
         {
-          name: '🟢 Status',
+          name: 'Status',
           value: 'Online',
           inline: true
         }

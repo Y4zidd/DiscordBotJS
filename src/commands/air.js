@@ -36,7 +36,7 @@ class AirCommand extends Command {
   async messageRun(message, args) {
     const city = args.rest;
     if (!city) {
-      return message.reply('❌ Please enter a city name! Example: `!air Jakarta`');
+      return message.reply('Please enter a city name! Example: `!air Jakarta`');
     }
     await this.handleAirQualityAndWeather(message, city);
   }
@@ -52,7 +52,7 @@ class AirCommand extends Command {
 
       const apiKey = process.env.OPENWEATHER_API_KEY;
       if (!apiKey) {
-        const errorMsg = '❌ OpenWeatherMap API key not found!';
+        const errorMsg = 'OpenWeatherMap API key not found!';
         return isInteraction ? 
           context.editReply(errorMsg) : 
           context.reply(errorMsg);
@@ -72,7 +72,7 @@ class AirCommand extends Command {
       console.log('Geocoding data:', JSON.stringify(geoData, null, 2));
       
       if (!geoData || geoData.length === 0) {
-        const notFoundMsg = `❌ City "${city}" not found!`;
+        const notFoundMsg = `City "${city}" not found!`;
         return isInteraction ? 
           context.editReply(notFoundMsg) : 
           context.reply(notFoundMsg);
@@ -140,13 +140,13 @@ class AirCommand extends Command {
       // Function to determine AQI quality with proper colors
       const getAQIInfo = (aqi) => {
         const aqiLevels = {
-          1: { level: 'Good', color: 0x00FF00, emoji: '🟢' },        // Green
-          2: { level: 'Fair', color: 0xFFFF00, emoji: '🟡' },      // Yellow
-          3: { level: 'Moderate', color: 0xFF7F00, emoji: '🟠' }, // Orange
-          4: { level: 'Poor', color: 0xFF0000, emoji: '🔴' }, // Red
-          5: { level: 'Very Poor', color: 0x800080, emoji: '🟣' } // Purple
+          1: { level: 'Good', color: 0x00FF00 },
+          2: { level: 'Fair', color: 0xFFFF00 },
+          3: { level: 'Moderate', color: 0xFF7F00 },
+          4: { level: 'Poor', color: 0xFF0000 },
+          5: { level: 'Very Poor', color: 0x800080 }
         };
-        return aqiLevels[aqi] || { level: 'Unknown', color: 0x808080, emoji: '❓' };
+        return aqiLevels[aqi] || { level: 'Unknown', color: 0x808080 };
       };
 
       const aqiInfo = getAQIInfo(aqi);

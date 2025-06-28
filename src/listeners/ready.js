@@ -12,12 +12,12 @@ class ReadyListener extends Listener {
 
   run(client) {
     const { username, id } = client.user;
-    console.log(`✅ Bot successfully logged in!`);
-    console.log(`📛 Username: ${username}`);
-    console.log(`🆔 ID: ${id}`);
-    console.log(`🏠 Servers: ${client.guilds.cache.size} servers`);
-    console.log(`👥 Users: ${client.users.cache.size} users`);
-    console.log('─'.repeat(50));
+    console.log(`Bot successfully logged in!`);
+    console.log(`Username: ${username}`);
+    console.log(`ID: ${id}`);
+    console.log(`Servers: ${client.guilds.cache.size} servers`);
+    console.log(`Users: ${client.users.cache.size} users`);
+    console.log('-'.repeat(50));
     
     // Set activity/status bot
     client.user.setActivity('with Sapphire.js', { 

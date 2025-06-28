@@ -32,16 +32,19 @@ class HelpMenuListener extends Listener {
         case 'socdl':
           await this.handleSocdl(interaction);
           break;
+        case 'purge':
+          await this.handlePurge(interaction);
+          break;
         default:
           await interaction.reply({ 
-            content: '❌ Command not recognized!', 
+            content: 'Command not recognized!', 
             ephemeral: true 
           });
       }
     } catch (error) {
       console.error('Error handling help menu selection:', error);
       await interaction.reply({ 
-        content: '❌ An error occurred while processing command!', 
+        content: 'An error occurred while processing command!', 
         ephemeral: true 
       });
     }
@@ -57,9 +60,9 @@ class HelpMenuListener extends Listener {
     const ping = Math.round(interaction.client.ws.ping);
 
     return interaction.editReply(
-      `Pong! 🏓\n` +
-      `📡 **API Latency**: ${diff}ms\n` +
-      `💓 **Heartbeat**: ${ping}ms`
+      `Pong!\n` +
+      `API Latency: ${diff}ms\n` +
+      `Heartbeat: ${ping}ms`
     );
   }
 
@@ -67,7 +70,7 @@ class HelpMenuListener extends Listener {
     // Create modal for chat input
     const modal = new ModalBuilder()
       .setCustomId('chat_modal')
-      .setTitle('💬 Chat with AI');
+      .setTitle('Chat with AI');
 
     const chatInput = new TextInputBuilder()
       .setCustomId('chat_message')
@@ -87,7 +90,7 @@ class HelpMenuListener extends Listener {
     // Create modal for city input
     const modal = new ModalBuilder()
       .setCustomId('air_modal')
-      .setTitle('🌤️ Check Weather & Air Quality');
+      .setTitle('Check Weather & Air Quality');
 
     const cityInput = new TextInputBuilder()
       .setCustomId('city_name')
@@ -110,7 +113,7 @@ class HelpMenuListener extends Listener {
       await helpCommand.showHelpMenu(interaction);
     } else {
       await interaction.reply({ 
-        content: '❌ Help command not found!', 
+        content: 'Help command not found!', 
         ephemeral: true 
       });
     }
@@ -120,7 +123,7 @@ class HelpMenuListener extends Listener {
     // Create modal for socdl input
     const modal = new ModalBuilder()
       .setCustomId('socdl_modal')
-      .setTitle('📥 Download Social Media Video');
+      .setTitle('Download Social Media Video');
 
     const urlInput = new TextInputBuilder()
       .setCustomId('socdl_url')
@@ -131,6 +134,26 @@ class HelpMenuListener extends Listener {
       .setMaxLength(500);
 
     const firstActionRow = new ActionRowBuilder().addComponents(urlInput);
+    modal.addComponents(firstActionRow);
+
+    await interaction.showModal(modal);
+  }
+
+  async handlePurge(interaction) {
+    // Create modal for purge input
+    const modal = new ModalBuilder()
+      .setCustomId('purge_modal')
+      .setTitle('Bulk Delete Messages');
+
+    const amountInput = new TextInputBuilder()
+      .setCustomId('purge_amount')
+      .setLabel('Number of messages to delete (max 100)')
+      .setStyle(TextInputStyle.Short)
+      .setPlaceholder('e.g. 10')
+      .setRequired(true)
+      .setMaxLength(3);
+
+    const firstActionRow = new ActionRowBuilder().addComponents(amountInput);
     modal.addComponents(firstActionRow);
 
     await interaction.showModal(modal);

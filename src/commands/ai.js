@@ -75,16 +75,16 @@ class AiCommand extends Command {
     
     const embed = new EmbedBuilder()
       .setColor(config.colors.primary)
-      .setTitle(`${config.emojis.bot} AI Chat Status`)
+      .setTitle(`AI Chat Status`)
       .setDescription('Information about AI Chat bot')
       .addFields(
         {
-          name: `${config.emojis.success} Status`,
+          name: `Status`,
           value: `AI Chat is active with **${serviceNames[status.service]}**`,
           inline: true
         },
         {
-          name: `${config.emojis.info} Available Services`,
+          name: `Available Services`,
           value: [
             `OpenAI: ${status.available.openai ? '✅' : '❌'}`,
             `Gemini: ${status.available.gemini ? '✅' : '❌'}`,
@@ -94,12 +94,12 @@ class AiCommand extends Command {
           inline: true
         },
         {
-          name: `${config.emojis.settings} How to Use`,
+          name: `How to Use`,
           value: '• Mention bot: `@Y4zBot hello`\n• DM the bot directly\n• Say the bot\'s name: "Y4zBot how are you?"',
           inline: false
         },
         {
-          name: `${config.emojis.warning} Rate Limit`,
+          name: `Rate Limit`,
           value: '1 response per 3 seconds per user',
           inline: true
         }
@@ -119,21 +119,21 @@ class AiCommand extends Command {
   async handleSetup(context) {
     const embed = new EmbedBuilder()
       .setColor(config.colors.warning)
-      .setTitle(`${config.emojis.settings} AI Setup Guide`)
+      .setTitle(`AI Setup Guide`)
       .setDescription('How to setup more advanced AI:')
       .addFields(
         {
-          name: `${config.emojis.info} 1. OpenAI (ChatGPT) - Recommended`,
+          name: `1. OpenAI (ChatGPT) - Recommended`,
           value: '• Register at https://platform.openai.com\n• Get API key\n• Add `OPENAI_API_KEY=your_key` to .env\n• Restart bot',
           inline: false
         },
         {
-          name: `${config.emojis.info} 2. Google Gemini - Free Tier`,
+          name: `2. Google Gemini - Free Tier`,
           value: '• Register at https://makersuite.google.com\n• Get API key\n• Add `GEMINI_API_KEY=your_key` to .env\n• Restart bot',
           inline: false
         },
         {
-          name: `${config.emojis.warning} Cost`,
+          name: `Cost`,
           value: '• OpenAI: ~$0.002 per 1000 tokens\n• Gemini: Free up to 60 requests/minute\n• Simple: Free but limited',
           inline: false
         }

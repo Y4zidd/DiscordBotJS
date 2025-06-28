@@ -9,8 +9,8 @@ class AIHelper {
     this.preferredService = this.detectPreferredService();
     
     // Debug log
-    console.log(`🤖 AI Service detected: ${this.preferredService}`);
-    console.log(`🔑 Available APIs: Gemini=${!!this.geminiKey}`);
+    console.log(`AI Service detected: ${this.preferredService}`);
+    console.log(`Available APIs: Gemini=${!!this.geminiKey}`);
   }
 
   detectPreferredService() {
@@ -40,9 +40,9 @@ class AIHelper {
     const genAI = new GoogleGenerativeAI(this.geminiKey);
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
+    // Remove emoji and emoji instructions from prompt
     const prompt = `You are Y4zBot, a friendly and helpful Discord bot. Characteristics:
 - Speak in casual and friendly English
-- Use appropriate emojis
 - Answer briefly and naturally (maximum 2-3 sentences)
 - If asked about yourself, say you are Y4zBot
 - Don't be too formal, keep it casual
@@ -59,7 +59,7 @@ Response:`;
 
   getSimpleResponse(userMessage, username) {
     // Fallback sederhana untuk error
-    return `Hmm, aku lagi ada masalah nih ${username}. Coba tanya lagi ya! 🤖`;
+    return `Hmm, aku lagi ada masalah nih ${username}. Coba tanya lagi ya!`;
   }
 
   getStatus() {

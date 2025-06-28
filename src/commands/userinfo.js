@@ -31,21 +31,21 @@ class UserInfoCommand extends Command {
   createUserInfoEmbed(targetUser, requester, member = null) {
     const embed = new EmbedBuilder()
       .setColor(config.colors.primary)
-      .setTitle(`${config.emojis.info} User Information`)
+      .setTitle(`User Information`)
       .setThumbnail(targetUser.displayAvatarURL({ dynamic: true, size: 256 }))
       .addFields(
         {
-          name: '👤 Username',
+          name: 'Username',
           value: targetUser.tag,
           inline: true
         },
         {
-          name: '🆔 ID',
+          name: 'ID',
           value: targetUser.id,
           inline: true
         },
         {
-          name: '📅 Account Created',
+          name: 'Account Created',
           value: `<t:${Math.floor(targetUser.createdTimestamp / 1000)}:F>`,
           inline: false
         }
