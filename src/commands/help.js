@@ -47,14 +47,15 @@ class HelpCommand extends Command {
             'Socdl - Download video from Instagram, Facebook, or TikTok\n' +
             'Purge - Bulk delete messages in a channel\n' +
             'Help - Show this menu\n' +
-            'manga - Search manga from MangaDex',
+            'Manga - Search manga from MangaDex\n' +
+            'Anime - Search anime from HiAnime (Aniwatch) with embed navigation and episode list',
           inline: false
         },
         {
           name: 'How to Use',
           value: 'Select a command from the dropdown menu below, or type manually:\n' +
-                 '• Slash commands: `/ping`, `/chat`, `/air`\n' +
-                 '• Message commands: `!ping`, `!chat`, `!air`',
+                 '• Slash commands: `/ping`, `/chat`, `/air`, `/anime`\n' +
+                 '• Message commands: `!ping`, `!chat`, `!air`, `!anime`',
           inline: false
         }
       )
@@ -103,6 +104,11 @@ class HelpCommand extends Command {
           label: 'Manga - Search Manga',
           description: 'Search manga from MangaDex with interactive collage & unlimited pagination',
           value: 'manga'
+        },
+        {
+          label: 'Anime - Search Anime',
+          description: 'Search anime from HiAnime (Aniwatch) with embed navigation and episode list',
+          value: 'anime'
         }
       ]);
 

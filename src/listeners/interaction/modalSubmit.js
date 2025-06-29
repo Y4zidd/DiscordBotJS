@@ -28,6 +28,9 @@ class ModalSubmitListener extends Listener {
         case 'manga_modal':
           await this.handleMangaModal(interaction);
           break;
+        case 'anime_modal':
+          await this.handleAnimeModal(interaction);
+          break;
       }
     } catch (error) {
       console.error('Error handling modal submit:', error);
@@ -126,6 +129,23 @@ class ModalSubmitListener extends Listener {
     } else {
       await interaction.reply({
         content: 'Manga command not found!',
+        ephemeral: true
+      });
+    }
+  }
+
+  async handleAnimeModal(interaction) {
+    const animeTitle = interaction.fields.getTextInputValue('anime_title');
+    // Get the anime command and run it directly
+    const animeCommand = this.container.stores.get('commands').get('anime');
+    if (animeCommand) {
+      interaction.options = {
+        getString: () => animeTitle
+      };
+      await animeCommand.chatInputRun(interaction);
+    } else {
+      await interaction.reply({
+        content: 'Anime command not found!',
         ephemeral: true
       });
     }

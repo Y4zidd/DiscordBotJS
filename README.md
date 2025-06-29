@@ -1,4 +1,4 @@
-# Discord Bot JS
+# <div align="center">Discord Bot JS</div>
 
 <div align="center">
 <img src="https://img.shields.io/badge/Node-%3E%3D%2020-43853D?style=flat-square&logo=node.js&logoColor=white"/>
@@ -7,20 +7,21 @@
 <img src="https://img.shields.io/badge/Framework-Sapphire-blue?style=flat-square"/>
 </div>
 
-<center> A powerful and modern Discord bot featuring AI chat (Gemini), weather & air quality info, video downloader (TikTok, Instagram, Facebook), moderation tools, interactive help, and custom welcome/goodbye images. Built with Sapphire.js for easy scalability and clean code structure. </center>
+<center> A powerful and modern Discord bot featuring AI chat (Gemini), anime/manga search with pagination, video downloader (TikTok, Instagram, Facebook), weather & air quality info, moderation tools, interactive help, and custom welcome/goodbye images. Built with Sapphire.js for easy scalability and clean code structure. </center>
 
 ## ✨ Features
 
 |  Command   |           Description            | Status |
 | :--------: | :------------------------------: | :----: |
-|    Ping    |        Check Bot Latency         |   ✅   |
-|    Chat    |      AI Chat with Gemini AI      |   ✅   |
+|   Chat     |      AI Chat with Gemini AI      |   ✅   |
+|   Anime    |  Search HiAnime (Aniwatch), embed navigation, episode list, persistent session |   ✅   |
+|   Manga    |  Search MangaDex, interactive collage & pagination |   ✅   |
+|  Download  |  Download Videos from TikTok, Instagram, Facebook |   ✅   |
 |    Air     |   Weather & Air Quality Info     |   ✅   |
 |    Help    |   Interactive Command Menu       |   ✅   |
-|  Download  |  Download Videos from TikTok, Instagram, Facebook |   ✅   |
-|   Purge    |   Bulk Delete Messages           |   ✅   |
 |  Welcome/Goodbye | Custom image for member join/leave |   ✅   |
-|   Manga    |  Search MangaDex, interactive collage & pagination |   ✅   |
+|   Purge    |   Bulk Delete Messages           |   ✅   |
+|    Ping    |        Check Bot Latency         |   ✅   |
 
 ## 🚀 Getting Started
 1. Clone this repo

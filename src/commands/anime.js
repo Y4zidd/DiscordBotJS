@@ -1,11 +1,9 @@
 const { Command } = require('@sapphire/framework');
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 const { HiAnime } = require('aniwatch');
 const fs = require('fs');
 const CACHE_FILE = './animeCache.json';
 
-// In-memory cache for pagination (userId+query)
-const animeCache = {};
 const hianime = new HiAnime.Scraper();
 
 // Helper to encode/decode query safely for customId and cacheKey
@@ -16,18 +14,45 @@ function decodeQuery(q) {
   return decodeURIComponent(q);
 }
 
-// Load cache dari file saat start
-if (fs.existsSync(CACHE_FILE)) {
-  Object.assign(animeCache, JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8')));
+// Selalu baca/tulis cache langsung ke file, bukan memory
+function setAnimeCache(key, data) {
+  let fileCache = {};
+  if (fs.existsSync(CACHE_FILE)) {
+    try {
+      fileCache = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
+    } catch {}
+  }
+  fileCache[key] = {
+    data,
+    lastActive: Date.now()
+  };
+  fs.writeFileSync(CACHE_FILE, JSON.stringify(fileCache));
 }
 
-// Simpan cache ke file setiap kali di-set
-function saveCache() {
-  fs.writeFileSync(CACHE_FILE, JSON.stringify(animeCache));
+function getAnimeCache(key) {
+  let fileCache = {};
+  if (fs.existsSync(CACHE_FILE)) {
+    try {
+      fileCache = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
+    } catch {}
+  }
+  const entry = fileCache[key];
+  if (!entry) return null;
+  const now = Date.now();
+  if (now - entry.lastActive > 180000) { // 3 minutes
+    delete fileCache[key];
+    fs.writeFileSync(CACHE_FILE, JSON.stringify(fileCache));
+    return 'expired';
+  }
+  // Update lastActive on access
+  entry.lastActive = now;
+  fileCache[key] = entry;
+  fs.writeFileSync(CACHE_FILE, JSON.stringify(fileCache));
+  return entry.data;
 }
 
 async function fetchAllAnimeResults(query) {
-  // Ambil semua hasil pencarian dari HiAnime (Aniwatch)
+  // Get all search results from HiAnime (Aniwatch)
   let allData = [];
   let page = 1;
   let hasNext = true;
@@ -45,7 +70,7 @@ async function sendAnimeEmbed(interaction, query, userId, index, allData) {
   const anime = allData[index];
   if (!anime) return interaction.editReply('Anime not found.');
   const encodedQuery = encodeQuery(query);
-  // Gunakan | sebagai delimiter agar query apapun aman
+  // Use | as delimiter so any query is safe
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
       .setCustomId(`anime|prev|${userId}|${encodedQuery}|${index}`)
@@ -64,7 +89,7 @@ async function sendAnimeEmbed(interaction, query, userId, index, allData) {
       .setDisabled(index === allData.length - 1),
     new ButtonBuilder()
       .setCustomId(`anime|episodes|${userId}|${encodedQuery}|${index}`)
-      .setLabel('Lihat Episode')
+      .setLabel('View Episodes')
       .setStyle(ButtonStyle.Primary)
   );
   const embed = new EmbedBuilder()
@@ -109,9 +134,8 @@ class AnimeCommand extends Command {
         return interaction.editReply('No anime found with that title.');
       }
       const cacheKey = `${userId}_${encodeQuery(query)}`;
-      animeCache[cacheKey] = allResults;
-      saveCache();
-      console.log('Cache set:', cacheKey, 'Jumlah:', allResults.length);
+      setAnimeCache(cacheKey, allResults);
+      console.log('Cache set:', cacheKey, 'Count:', allResults.length);
       return sendAnimeEmbed(interaction, query, userId, 0, allResults);
     } catch (err) {
       console.error('Aniwatch API error:', err);
@@ -123,10 +147,10 @@ class AnimeCommand extends Command {
 // Button interaction handler for anime pagination & episode
 async function handleAnimeButton(interaction) {
   try {
-    // Reload cache from file to ensure sync across processes/restarts
-    if (fs.existsSync(CACHE_FILE)) {
-      Object.assign(animeCache, JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8')));
-    }
+    // Hapus: reload cache dari file (tidak perlu lagi)
+    // if (fs.existsSync(CACHE_FILE)) {
+    //   Object.assign(animeCache, JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8')));
+    // }
     if (!interaction.isButton() || !interaction.customId.startsWith('anime|')) return;
     const parts = interaction.customId.split('|');
     const action = parts[1];
@@ -135,10 +159,12 @@ async function handleAnimeButton(interaction) {
     const index = parseInt(parts[4], 10);
     const query = decodeQuery(encodedQuery);
     const cacheKey = `${userId}_${encodedQuery}`;
-    const allData = animeCache[cacheKey];
-    console.log('Cache get:', cacheKey, 'Ada:', !!allData);
+    const allData = getAnimeCache(cacheKey);
+    if (allData === 'expired') {
+      return interaction.reply({ content: 'Your session has expired due to inactivity (over 3 minutes). Please search again to continue.', flags: MessageFlags.Ephemeral });
+    }
     if (!allData) {
-      return interaction.reply({ content: 'Session expired. Please search again.', ephemeral: true });
+      return interaction.reply({ content: 'No active session found. Please search again.', flags: MessageFlags.Ephemeral });
     }
     let idx = index;
     if (isNaN(idx) && interaction.message.embeds[0]?.footer?.text) {
@@ -148,23 +174,88 @@ async function handleAnimeButton(interaction) {
     if (action === 'prev' && idx > 0) idx--;
     if (action === 'next' && idx < allData.length - 1) idx++;
     if (action === 'episodes') {
-      await interaction.deferUpdate();
       const anime = allData[idx];
-      const episodesData = await hianime.getEpisodes(anime.id);
-      if (!episodesData.episodes || episodesData.episodes.length === 0) {
-        return interaction.followUp({ content: 'Tidak ada episode ditemukan.', ephemeral: true });
+      let episodesData;
+      try {
+        episodesData = await hianime.getEpisodes(anime.id);
+      } catch (err) {
+        console.error('getEpisodes error:', err);
+        return interaction.update({ content: 'Failed to fetch episode data from HiAnime. Please try again later or check the anime page directly.' });
       }
-      let desc = `Daftar episode untuk **${anime.name}**:\n\n`;
-      desc += episodesData.episodes.map(ep => `Episode ${ep.number}: ${ep.title}\nhttps://hianime.to/watch/${anime.id}?ep=${ep.episodeId.split('=')[1]}`).join('\n\n');
-      return interaction.followUp({ content: desc, ephemeral: true });
+      if (!episodesData.episodes || episodesData.episodes.length === 0) {
+        return interaction.update({ content: 'No episodes found.' });
+      }
+      // Show first page (0), teruskan idx dan encodedQuery
+      return sendEpisodesEmbed(interaction, anime, episodesData.episodes, 0, userId, idx, encodedQuery);
+    }
+    if (action === 'epnext' || action === 'epprev') {
+      const anime = allData[idx];
+      let episodesData;
+      try {
+        episodesData = await hianime.getEpisodes(anime.id);
+      } catch (err) {
+        console.error('getEpisodes error:', err);
+        return interaction.update({ content: 'Failed to fetch episode data from HiAnime. Please try again later or check the anime page directly.' });
+      }
+      if (!episodesData.episodes || episodesData.episodes.length === 0) {
+        return interaction.update({ content: 'No episodes found.' });
+      }
+      let page = parseInt(parts[5], 10) || 0;
+      if (action === 'epnext') page++;
+      if (action === 'epprev') page--;
+      // Pastikan idx dan encodedQuery diteruskan
+      return sendEpisodesEmbed(interaction, anime, episodesData.episodes, page, userId, idx, encodedQuery);
     }
     await interaction.deferUpdate();
     await sendAnimeEmbed(interaction, query, userId, idx, allData);
   } catch (err) {
     console.error('handleAnimeButton error:', err);
     try {
-      await interaction.followUp({ content: 'Error handling button interaction.', ephemeral: true });
+      await interaction.followUp({ content: 'Error handling button interaction.', flags: MessageFlags.Ephemeral });
     } catch {}
+  }
+}
+
+// Helper to send paginated episodes embed
+async function sendEpisodesEmbed(interaction, anime, episodes, page, userId, animeIndex, encodedQuery) {
+  const perPage = 10;
+  const totalPages = Math.ceil(episodes.length / perPage);
+  if (page < 0) page = 0;
+  if (page >= totalPages) page = totalPages - 1;
+  const start = page * perPage;
+  const end = start + perPage;
+  const pageEpisodes = episodes.slice(start, end);
+  const desc = pageEpisodes.map(ep => `Episode ${ep.number}: ${ep.title}\n<https://hianime.to/watch/${anime.id}?ep=${ep.episodeId.split('=')[1]}>`).join('\n\n');
+  const embed = new EmbedBuilder()
+    .setTitle(`Episodes for ${anime.name}`)
+    .setDescription(desc)
+    .setFooter({ text: `Page ${page + 1} of ${totalPages}` });
+  const row = new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
+      .setCustomId(`anime|epprev|${userId}|${encodedQuery}|${animeIndex}|${page}`)
+      .setLabel('<')
+      .setStyle(ButtonStyle.Secondary)
+      .setDisabled(page === 0),
+    new ButtonBuilder()
+      .setCustomId('anime|epindex')
+      .setLabel(`${page + 1} / ${totalPages}`)
+      .setStyle(ButtonStyle.Secondary)
+      .setDisabled(true),
+    new ButtonBuilder()
+      .setCustomId(`anime|epnext|${userId}|${encodedQuery}|${animeIndex}|${page}`)
+      .setLabel('>')
+      .setStyle(ButtonStyle.Secondary)
+      .setDisabled(page === totalPages - 1)
+  );
+  try {
+    await interaction.update({ embeds: [embed], components: [row] });
+  } catch (e) {
+    if (e.code === 10062 || (e.rawError && e.rawError.code === 10062)) {
+      // Interaction expired, do nothing or optionally log
+      console.warn('Interaction expired: cannot update episode embed.');
+    } else {
+      throw e;
+    }
   }
 }
 
