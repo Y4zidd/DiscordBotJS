@@ -218,6 +218,7 @@ async function handleAnimeButton(interaction) {
       );
       return interaction.update({ embeds: [embed], components: [disabledRow], content: 'Session closed. You can search again anytime.' });
     }
+    // Hapus aksi epwatch, karena ButtonStyle.Link tidak trigger event ke bot
     await interaction.deferUpdate();
     await sendAnimeEmbed(interaction, query, userId, idx, allData);
   } catch (err) {
@@ -251,12 +252,25 @@ async function sendEpisodesEmbed(interaction, anime, episodes, page, userId, ani
   const start = page * perPage;
   const end = start + perPage;
   const pageEpisodes = episodes.slice(start, end);
-  const desc = pageEpisodes.map(ep => `Episode ${ep.number}: ${ep.title}\n<https://hianime.to/watch/${anime.id}?ep=${ep.episodeId.split('=')[1]}>`).join('\n\n');
   const embed = new EmbedBuilder()
     .setTitle(`Episodes for ${anime.name}`)
-    .setDescription(desc)
     .setFooter({ text: `Page ${page + 1} of ${totalPages}` });
-  const row = new ActionRowBuilder().addComponents(
+
+  // Episode buttons (max 5 per row, max 25 per message)
+  const episodeRows = [];
+  for (let i = 0; i < Math.min(pageEpisodes.length, 25); i += 5) {
+    episodeRows.push(new ActionRowBuilder().addComponents(
+      pageEpisodes.slice(i, i + 5).map(ep =>
+        new ButtonBuilder()
+          .setLabel(`Ep ${ep.number}`)
+          .setStyle(ButtonStyle.Link)
+          .setURL(`https://hianime.to/watch/${anime.id}?ep=${ep.episodeId.split('=')[1]}`)
+      )
+    ));
+  }
+
+  // Navigasi and close row
+  const navRow = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
       .setCustomId(`anime|epprev|${userId}|${encodedQuery}|${animeIndex}|${page}`)
       .setLabel('<')
@@ -278,7 +292,7 @@ async function sendEpisodesEmbed(interaction, anime, episodes, page, userId, ani
       .setStyle(ButtonStyle.Danger)
   );
   try {
-    await interaction.update({ embeds: [embed], components: [row] });
+    await interaction.update({ embeds: [embed], components: [...episodeRows, navRow] });
   } catch (e) {
     if (e.code === 10062 || (e.rawError && e.rawError.code === 10062)) {
       // Interaction expired, do nothing or optionally log
