@@ -186,7 +186,9 @@ async function handleAnimeButton(interaction) {
         return interaction.update({ content: 'No episodes found.' });
       }
       // Show first page (0), teruskan idx dan encodedQuery
-      return sendEpisodesEmbed(interaction, anime, episodesData.episodes, 0, userId, idx, encodedQuery);
+      await sendEpisodesEmbed(interaction, anime, episodesData.episodes, 0, userId, idx, encodedQuery);
+      // Jangan hapus cache di sini!
+      return;
     }
     if (action === 'epnext' || action === 'epprev') {
       const anime = allData[idx];
@@ -203,8 +205,18 @@ async function handleAnimeButton(interaction) {
       let page = parseInt(parts[5], 10) || 0;
       if (action === 'epnext') page++;
       if (action === 'epprev') page--;
-      // Pastikan idx dan encodedQuery diteruskan
-      return sendEpisodesEmbed(interaction, anime, episodesData.episodes, page, userId, idx, encodedQuery);
+      await sendEpisodesEmbed(interaction, anime, episodesData.episodes, page, userId, idx, encodedQuery);
+      // Jangan hapus cache di sini!
+      return;
+    }
+    if (action === 'epclose') {
+      // Manual close: delete cache and disable all buttons
+      deleteAnimeCache(cacheKey);
+      const embed = interaction.message.embeds[0];
+      const disabledRow = new ActionRowBuilder().addComponents(
+        interaction.message.components[0].components.map(btn => ButtonBuilder.from(btn).setDisabled(true))
+      );
+      return interaction.update({ embeds: [embed], components: [disabledRow], content: 'Session closed. You can search again anytime.' });
     }
     await interaction.deferUpdate();
     await sendAnimeEmbed(interaction, query, userId, idx, allData);
@@ -213,6 +225,20 @@ async function handleAnimeButton(interaction) {
     try {
       await interaction.followUp({ content: 'Error handling button interaction.', flags: MessageFlags.Ephemeral });
     } catch {}
+  }
+}
+
+// Fungsi untuk menghapus cache user dari file
+function deleteAnimeCache(key) {
+  let fileCache = {};
+  if (fs.existsSync(CACHE_FILE)) {
+    try {
+      fileCache = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
+    } catch {}
+  }
+  if (fileCache[key]) {
+    delete fileCache[key];
+    fs.writeFileSync(CACHE_FILE, JSON.stringify(fileCache));
   }
 }
 
@@ -245,7 +271,11 @@ async function sendEpisodesEmbed(interaction, anime, episodes, page, userId, ani
       .setCustomId(`anime|epnext|${userId}|${encodedQuery}|${animeIndex}|${page}`)
       .setLabel('>')
       .setStyle(ButtonStyle.Secondary)
-      .setDisabled(page === totalPages - 1)
+      .setDisabled(page === totalPages - 1),
+    new ButtonBuilder()
+      .setCustomId(`anime|epclose|${userId}|${encodedQuery}|${animeIndex}`)
+      .setLabel('Close')
+      .setStyle(ButtonStyle.Danger)
   );
   try {
     await interaction.update({ embeds: [embed], components: [row] });
