@@ -172,6 +172,20 @@ async function handleAnimeButton(interaction) {
     const index = parseInt(parts[4], 10);
     const query = decodeQuery(encodedQuery);
     const cacheKey = `${userId}_${encodedQuery}`;
+    
+    // Special handling for epclose action - don't check cache first
+    if (action === 'epclose') {
+      // Manual close: delete cache and disable all buttons
+      console.log('Deleting cache with key:', cacheKey);
+      deleteAnimeCache(cacheKey);
+      const embed = interaction.message.embeds[0];
+      const disabledRow = new ActionRowBuilder().addComponents(
+        interaction.message.components[0].components.map(btn => ButtonBuilder.from(btn).setDisabled(true))
+      );
+      return interaction.update({ embeds: [embed], components: [disabledRow], content: 'Session closed. You can search again anytime.' });
+    }
+    
+    // For all other actions, check cache
     const allData = getAnimeCache(cacheKey);
     if (allData === 'expired') {
       return interaction.reply({ content: 'Your session has expired due to inactivity (over 3 minutes). Please search again to continue.', flags: MessageFlags.Ephemeral });
@@ -224,15 +238,6 @@ async function handleAnimeButton(interaction) {
       // Jangan hapus cache di sini!
       return;
     }
-    if (action === 'epclose') {
-      // Manual close: delete cache and disable all buttons
-      deleteAnimeCache(cacheKey);
-      const embed = interaction.message.embeds[0];
-      const disabledRow = new ActionRowBuilder().addComponents(
-        interaction.message.components[0].components.map(btn => ButtonBuilder.from(btn).setDisabled(true))
-      );
-      return interaction.update({ embeds: [embed], components: [disabledRow], content: 'Session closed. You can search again anytime.' });
-    }
     // Hapus aksi epwatch, karena ButtonStyle.Link tidak trigger event ke bot
     await interaction.deferUpdate();
     await sendAnimeEmbed(interaction, query, userId, idx, allData);
@@ -246,15 +251,27 @@ async function handleAnimeButton(interaction) {
 
 // Fungsi untuk menghapus cache user dari file
 function deleteAnimeCache(key) {
+  console.log('deleteAnimeCache called with key:', key);
   let fileCache = {};
   if (fs.existsSync(CACHE_FILE)) {
     try {
       fileCache = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
-    } catch {}
+      console.log('Current cache keys:', Object.keys(fileCache));
+    } catch (e) {
+      console.error('Error reading cache file:', e);
+    }
   }
   if (fileCache[key]) {
+    console.log('Cache key found, deleting...');
     delete fileCache[key];
-    fs.writeFileSync(CACHE_FILE, JSON.stringify(fileCache));
+    try {
+      fs.writeFileSync(CACHE_FILE, JSON.stringify(fileCache));
+      console.log('Cache successfully deleted and file updated');
+    } catch (e) {
+      console.error('Error writing cache file:', e);
+    }
+  } else {
+    console.log('Cache key not found in file:', key);
   }
 }
 
