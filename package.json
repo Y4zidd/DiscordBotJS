@@ -6,7 +6,15 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "node --watch src/index.js",
-    "register": "node src/register-commands.js"
+    "register": "node src/register-commands.js",
+    "pm2:start": "pm2 start pm2/ecosystem.config.js",
+    "pm2:stop": "pm2 stop discord-bot",
+    "pm2:restart": "pm2 restart discord-bot",
+    "pm2:delete": "pm2 delete discord-bot",
+    "pm2:logs": "pm2 logs discord-bot",
+    "pm2:status": "pm2 status",
+    "pm2:monitor": "./pm2/monitor.sh",
+    "pm2:setup": "./pm2/setup-startup.sh"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
