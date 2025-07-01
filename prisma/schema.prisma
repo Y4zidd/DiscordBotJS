@@ -1,0 +1,19 @@
+// This file defines your data models and database connection
+// You can edit this file and run `npx prisma generate` and `npx prisma db push` to apply changes
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model AnimeSession {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
+  query     String
+  data      Json
+  lastActive DateTime
+}
