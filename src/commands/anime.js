@@ -130,7 +130,7 @@ class AnimeCommand extends Command {
         .setName('anime')
         .setDescription('Search for anime info from HiAnime')
         .addStringOption(option =>
-          option.setName('query')
+          option.setName('title')
             .setDescription('Anime title to search')
             .setRequired(true)
         )
@@ -139,7 +139,7 @@ class AnimeCommand extends Command {
 
   async chatInputRun(interaction) {
     await interaction.deferReply();
-    const query = interaction.options.getString('query');
+    const query = interaction.options.getString('title');
     const userId = interaction.user.id;
     try {
       const allResults = await fetchAllAnimeResults(query);
