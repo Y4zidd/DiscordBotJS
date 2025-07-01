@@ -1,10 +1,11 @@
 const { Command } = require('@sapphire/framework');
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
-const { HiAnime } = require('aniwatch');
 const fs = require('fs');
 const CACHE_FILE = './animeCache.json';
 
-const hianime = new HiAnime.Scraper();
+// HiAnime akan di-import dinamis saat dibutuhkan
+let HiAnime = null;
+let hianime = null;
 
 // Helper to encode/decode query safely for customId and cacheKey
 function encodeQuery(q) {
@@ -51,13 +52,25 @@ function getAnimeCache(key) {
   return entry.data;
 }
 
+async function initializeHiAnime() {
+  if (!HiAnime) {
+    const module = await import('aniwatch');
+    HiAnime = module.HiAnime;
+    hianime = new HiAnime.Scraper();
+  }
+  return hianime;
+}
+
 async function fetchAllAnimeResults(query) {
+  // Initialize HiAnime if needed
+  const scraper = await initializeHiAnime();
+  
   // Get all search results from HiAnime (Aniwatch)
   let allData = [];
   let page = 1;
   let hasNext = true;
   while (hasNext && page <= 5) { // Limit 5 pages for safety
-    const data = await hianime.search(query, page);
+    const data = await scraper.search(query, page);
     if (!data.animes || data.animes.length === 0) break;
     allData = allData.concat(data.animes);
     hasNext = data.hasNextPage;
@@ -177,7 +190,8 @@ async function handleAnimeButton(interaction) {
       const anime = allData[idx];
       let episodesData;
       try {
-        episodesData = await hianime.getEpisodes(anime.id);
+        const scraper = await initializeHiAnime();
+        episodesData = await scraper.getEpisodes(anime.id);
       } catch (err) {
         console.error('getEpisodes error:', err);
         return interaction.update({ content: 'Failed to fetch episode data from HiAnime. Please try again later or check the anime page directly.' });
@@ -194,7 +208,8 @@ async function handleAnimeButton(interaction) {
       const anime = allData[idx];
       let episodesData;
       try {
-        episodesData = await hianime.getEpisodes(anime.id);
+        const scraper = await initializeHiAnime();
+        episodesData = await scraper.getEpisodes(anime.id);
       } catch (err) {
         console.error('getEpisodes error:', err);
         return interaction.update({ content: 'Failed to fetch episode data from HiAnime. Please try again later or check the anime page directly.' });
