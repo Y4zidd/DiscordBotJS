@@ -1,51 +1,51 @@
-# PM2 Configuration untuk Discord Bot
+# PM2 Configuration for Discord Bot
 
-Folder ini berisi konfigurasi dan script untuk menjalankan Discord bot menggunakan PM2 Process Manager.
+This folder contains configuration and scripts to run Discord bot using PM2 Process Manager.
 
-## 📁 Struktur Folder
+## 📁 Folder Structure
 ```
 pm2/
-├── ecosystem.config.js   # Konfigurasi PM2
-├── start.sh             # Script untuk start bot
-├── stop.sh              # Script untuk stop bot  
-├── monitor.sh           # Script untuk monitoring
-├── setup-startup.sh     # Script setup auto-startup
-├── logs/                # Folder untuk log files
-└── README.md           # Dokumentasi ini
+├── ecosystem.config.js   # PM2 Configuration
+├── start.sh             # Script to start bot
+├── stop.sh              # Script to stop bot  
+├── monitor.sh           # Script for monitoring
+├── setup-startup.sh     # Script for auto-startup setup
+├── logs/                # Folder for log files
+└── README.md           # This documentation
 ```
 
-## 🚀 Cara Penggunaan
+## 🚀 How to Use
 
-### 1. Install PM2 (jika belum ada)
+### 1. Install PM2 (if not installed)
 ```bash
 npm install -g pm2
 ```
 
 ### 2. Start Bot
 ```bash
-# Menggunakan script
+# Using script
 ./pm2/start.sh
 
-# Atau menggunakan npm
+# Or using npm
 npm run pm2:start
 
-# Atau langsung PM2
+# Or directly with PM2
 pm2 start pm2/ecosystem.config.js
 ```
 
 ### 3. Monitoring Bot
 ```bash
-# Lihat status
+# View status
 pm2 status
 
-# Lihat logs real-time
+# View logs real-time
 pm2 logs discord-bot
 
 # Monitor resource usage
 ./pm2/monitor.sh
 ```
 
-### 4. Kontrol Bot
+### 4. Control Bot
 ```bash
 # Restart bot
 pm2 restart discord-bot
@@ -53,44 +53,44 @@ pm2 restart discord-bot
 # Stop bot
 pm2 stop discord-bot
 
-# Delete dari PM2
+# Delete from PM2
 pm2 delete discord-bot
 ```
 
 ### 5. Setup Auto-Startup (Optional)
 ```bash
-# Setup agar bot auto-start saat VPS restart
+# Setup auto-start when VPS restarts
 ./pm2/setup-startup.sh
 ```
 
 ## 📊 Log Files
 
-Log files disimpan di `pm2/logs/`:
-- `combined.log` - Semua log
+Log files are stored in `pm2/logs/`:
+- `combined.log` - All logs
 - `out.log` - Output log  
 - `err.log` - Error log
 
-## 🔧 Konfigurasi
+## 🔧 Configuration
 
-Edit `ecosystem.config.js` untuk mengubah:
+Edit `ecosystem.config.js` to change:
 - Memory limit
 - Restart policy
 - Environment variables
 - Log rotation
 
-## 📋 Perintah Berguna
+## 📋 Useful Commands
 
 ```bash
-# Lihat semua proses PM2
+# View all PM2 processes
 pm2 list
 
-# Save konfigurasi saat ini
+# Save current configuration
 pm2 save
 
-# Restart semua proses
+# Restart all processes
 pm2 restart all
 
-# Stop semua proses
+# Stop all processes
 pm2 stop all
 
 # Clear logs
@@ -100,9 +100,9 @@ pm2 flush
 pm2 reload discord-bot
 ```
 
-## ❗ Catatan Penting
+## ❗ Important Notes
 
-- Bot akan otomatis restart jika crash
-- Memory limit di-set ke 1GB
-- Log rotation otomatis aktif
-- Gunakan `pm2 save` setelah perubahan konfigurasi
+- Bot will automatically restart if it crashes
+- Memory limit is set to 1GB
+- Log rotation is automatically active
+- Use `pm2 save` after configuration changes
