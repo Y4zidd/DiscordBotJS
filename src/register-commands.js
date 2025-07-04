@@ -102,6 +102,66 @@ const commands = [
     ]
   },
   {
+    name: 'youtube',
+    description: 'Search for a video on YouTube',
+    options: [
+      {
+        name: 'query',
+        description: 'The video to search for',
+        type: 3, // STRING type
+        required: true
+      }
+    ]
+  },
+  {
+    name: 'anime',
+    description: 'Search for an anime',
+    options: [
+      {
+        name: 'title',
+        description: 'The title of the anime to search for',
+        type: 3, // STRING type
+        required: true
+      }
+    ]
+  },
+  {
+    name: 'manga',
+    description: 'Search for a manga',
+    options: [
+      {
+        name: 'title',
+        description: 'The title of the manga to search for',
+        type: 3, // STRING type
+        required: true
+      }
+    ]
+  },
+  {
+    name: 'air',
+    description: 'Check the air quality of a city',
+    options: [
+      {
+        name: 'city',
+        description: 'The city to check',
+        type: 3, // STRING type
+        required: true
+      }
+    ]
+  },
+  {
+    name: 'chat',
+    description: 'Chat with the AI',
+    options: [
+      {
+        name: 'message',
+        description: 'The message to send to the AI',
+        type: 3, // STRING type
+        required: true
+      }
+    ]
+  },
+  {
     name: 'purge',
     description: 'Bulk delete messages in this channel',
     options: [

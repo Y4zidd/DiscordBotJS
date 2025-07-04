@@ -32,16 +32,6 @@ client.once('ready', () => {
   console.log(`Users: ${client.users.cache.size}`);
 });
 
-// Tambahkan handler untuk tombol manga pagination
-typeof require !== 'undefined' && (() => {
-  try {
-    const { handleMangaButton } = require('./commands/manga.js');
-    client.on('interactionCreate', handleMangaButton);
-  } catch (e) {
-    console.error('Failed to load manga button handler:', e);
-  }
-})();
-
 // Login with bot token
 // IMPORTANT: Never commit tokens to repository!
 // Use environment variables or .env file

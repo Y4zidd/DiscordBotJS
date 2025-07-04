@@ -1,100 +1,181 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const yt = require('youtube-sr').default;
-const fs = require('fs');
-const path = require('path');
+const { Command } = require('@sapphire/framework');
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const YouTube = require('youtube-sr').default;
 
-const cacheFilePath = path.join(__dirname, '..', '..', 'youtubeCache.json');
+// Global In-Memory Cache - shared dengan youtubeButtons.js
+global.youtubeCache = global.youtubeCache || new Map();
 
-function readCache() {
-    if (!fs.existsSync(cacheFilePath)) {
-        return {};
+// Cleanup cache setiap 30 menit untuk mencegah memory leak
+setInterval(() => {
+    const now = Date.now();
+    const expireTime = 30 * 60 * 1000; // 30 menit
+    
+    for (const [messageId, session] of global.youtubeCache.entries()) {
+        if (now - session.timestamp > expireTime) {
+            global.youtubeCache.delete(messageId);
+            console.log(`[YouTubeCache] Cleaned expired session: ${messageId}`);
+        }
     }
-    const cacheData = fs.readFileSync(cacheFilePath);
-    return JSON.parse(cacheData);
-}
+}, 10 * 60 * 1000); // Check setiap 10 menit
 
-function writeCache(cache) {
-    fs.writeFileSync(cacheFilePath, JSON.stringify(cache, null, 2));
-}
+class YoutubeCommand extends Command {
+    constructor(context, options) {
+        super(context, {
+            ...options,
+            name: 'youtube',
+            description: 'Search for YouTube videos with thumbnail, title, channel, upload date, and duration.',
+        });
+    }
 
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('youtube')
-        .setDescription('Search for a YouTube video.')
-        .addStringOption(option =>
-            option.setName('query')
-                .setDescription('The video to search for.')
-                .setRequired(true)),
-    async execute(interaction) {
+    async chatInputRun(interaction) {
         const query = interaction.options.getString('query');
         await interaction.deferReply();
 
         try {
-            const videos = await yt.search(query, { limit: 25, type: 'video' });
-            if (!videos.length) {
-                return interaction.editReply('No videos found for your query.');
+            // Search menggunakan YouTube.search sesuai dokumentasi
+            const searchResults = await YouTube.search(query, { limit: 10, type: 'video' });
+            
+            if (!searchResults || searchResults.length === 0) {
+                return interaction.editReply({ 
+                    content: `❌ No videos found for: **${query}**\nTry using different keywords.`,
+                    ephemeral: true 
+                });
             }
 
-            const sessionId = interaction.user.id;
-            const cache = readCache();
-            cache[sessionId] = {
-                videos: videos.map(v => ({
-                    title: v.title,
-                    url: v.url,
-                    thumbnail: v.thumbnail.url,
-                    duration: v.durationFormatted,
-                    views: v.views,
-                    channel: v.channel.name
-                })),
-                page: 0,
+            const messageId = (await interaction.fetchReply()).id;
+
+            // Map hasil pencarian sesuai struktur Response Example dari dokumentasi
+            const videos = searchResults.map(video => ({
+                id: video.id,
+                title: video.title,
+                url: video.url,
+                description: video.description,
+                durationFormatted: video.durationFormatted,
+                duration: video.duration,
+                uploadedAt: video.uploadedAt,
+                views: video.views,
+                shorts: video.shorts,
+                thumbnail: {
+                    id: video.thumbnail?.id,
+                    width: video.thumbnail?.width,
+                    height: video.thumbnail?.height,
+                    url: video.thumbnail?.url
+                },
+                channel: {
+                    name: video.channel?.name,
+                    verified: video.channel?.verified,
+                    id: video.channel?.id,
+                    url: video.channel?.url,
+                    subscribers: video.channel?.subscribers
+                },
+                likes: video.likes,
+                dislikes: video.dislikes,
+                live: video.live,
+                private: video.private,
+                tags: video.tags || []
+            }));
+
+            // Simpan ke in-memory cache
+            global.youtubeCache.set(messageId, {
                 query: query,
-                interactionId: null, // Will be set after the first reply
-            };
-            writeCache(cache);
+                results: videos,
+                page: 0,
+                timestamp: Date.now()
+            });
 
-            const embed = createEmbed(cache[sessionId], 0);
-            const row = createButtons(sessionId, 0, cache[sessionId].videos.length);
+            // Buat embed untuk video pertama
+            const embed = this.createVideoEmbed(videos, 0, query);
+            const components = this.createNavigationButtons(messageId, 0, videos.length);
 
-            const message = await interaction.editReply({ embeds: [embed], components: [row] });
-
-            // Update cache with interactionId for later reference
-            cache[sessionId].interactionId = message.id;
-            writeCache(cache);
+            await interaction.editReply({ 
+                embeds: [embed], 
+                components: [components] 
+            });
 
         } catch (error) {
-            console.error('Error searching YouTube:', error);
-            interaction.editReply('An error occurred while searching for videos.');
+            console.error('[YouTubeCommand] Search Error:', error);
+            await interaction.editReply({ 
+                content: `❌ An error occurred while searching: \`${error.message}\`\nPlease try again later.`,
+                ephemeral: true 
+            });
         }
-    },
-};
+    }
 
-function createEmbed(sessionData, page) {
-    const video = sessionData.videos[page];
-    return new EmbedBuilder()
-        .setColor(0xFF0000)
-        .setTitle(video.title)
-        .setURL(video.url)
-        .setImage(video.thumbnail)
-        .setDescription(`**Channel:** ${video.channel}\n**Duration:** ${video.duration}\n**Views:** ${video.views ? video.views.toLocaleString() : 'N/A'}`)
-        .setFooter({ text: `Result ${page + 1} of ${sessionData.videos.length} for "${sessionData.query}"` });
+    createVideoEmbed(videos, pageIndex, query) {
+        const video = videos[pageIndex];
+        
+        // Format views number
+        const viewsText = video.views ? video.views.toLocaleString() : 'N/A';
+        
+        // Format channel info dengan verification badge
+        let channelText = 'N/A';
+        if (video.channel?.name) {
+            const verifiedBadge = video.channel.verified ? ' ✓' : '';
+            if (video.channel.url) {
+                channelText = `[${video.channel.name}](${video.channel.url})${verifiedBadge}`;
+            } else {
+                channelText = `${video.channel.name}${verifiedBadge}`;
+            }
+        }
+
+        // Format duration
+        const durationText = video.durationFormatted || 'N/A';
+        
+        // Format upload date
+        const uploadText = video.uploadedAt || 'N/A';
+
+        // Shorts indicator
+        const typeText = video.shorts ? '🩳 YouTube Shorts' : '📹 YouTube Video';
+
+        const embed = new EmbedBuilder()
+            .setColor('#FF0000')
+            .setTitle(video.title || 'Untitled Video')
+            .setURL(video.url)
+            .setDescription(typeText)
+            .addFields(
+                { name: '⏱️ Duration', value: durationText, inline: true },
+                { name: '👀 Views', value: viewsText, inline: true },
+                { name: '📅 Uploaded', value: uploadText, inline: true },
+                { name: '📺 Channel', value: channelText, inline: false }
+            )
+            .setFooter({ 
+                text: `Result ${pageIndex + 1} of ${videos.length} • Query: "${query}"`,
+                iconURL: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/youtube/youtube-original.svg'
+            })
+            .setTimestamp();
+
+        // Set thumbnail jika tersedia
+        if (video.thumbnail?.url) {
+            embed.setThumbnail(video.thumbnail.url);
+        }
+
+        return embed;
+    }
+
+    createNavigationButtons(messageId, currentPage, totalResults) {
+        return new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`youtube_prev_${messageId}`)
+                    .setLabel('Previous')
+                    .setStyle(ButtonStyle.Secondary)
+                    .setDisabled(currentPage === 0),
+                new ButtonBuilder()
+                    .setCustomId(`youtube_info_${messageId}`)
+                    .setLabel(`${currentPage + 1}/${totalResults}`)
+                    .setStyle(ButtonStyle.Secondary)
+                    .setDisabled(true),
+                new ButtonBuilder()
+                    .setCustomId(`youtube_next_${messageId}`)
+                    .setLabel('Next')
+                    .setStyle(ButtonStyle.Secondary)
+                    .setDisabled(currentPage >= totalResults - 1),
+                new ButtonBuilder()
+                    .setCustomId(`youtube_close_${messageId}`)
+                    .setLabel('Close')
+                    .setStyle(ButtonStyle.Danger)
+            );
+    }
 }
 
-function createButtons(sessionId, page, total) {
-    return new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder()
-                .setCustomId(`youtube_prev_${sessionId}`)
-                .setLabel('◀️ Prev')
-                .setStyle(ButtonStyle.Primary)
-                .setDisabled(page === 0),
-            new ButtonBuilder()
-                .setCustomId(`youtube_next_${sessionId}`)
-                .setLabel('Next ▶️')
-                .setStyle(ButtonStyle.Primary)
-                .setDisabled(page === total - 1),
-            new ButtonBuilder()
-                .setCustomId(`youtube_close_${sessionId}`)
-                .setLabel('Close')
-                .setStyle(ButtonStyle.Danger)
-        );
-}
+module.exports = { YoutubeCommand };
