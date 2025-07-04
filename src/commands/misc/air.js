@@ -1,6 +1,6 @@
 const { Command } = require('@sapphire/framework');
 const { EmbedBuilder } = require('discord.js');
-const config = require('../config');
+const config = require('../../config');
 require('dotenv').config();
 
 class AirCommand extends Command {

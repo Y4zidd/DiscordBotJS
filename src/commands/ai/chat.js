@@ -1,6 +1,6 @@
 const { Command } = require('@sapphire/framework');
 const { EmbedBuilder } = require('discord.js');
-const config = require('../config');
+const config = require('../../config');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 class ChatCommand extends Command {

@@ -7,7 +7,7 @@ const path = require('path');
 const { fbdown, igdl, ttdl } = require('btch-downloader');
 const axios = require('axios');
 
-const TMP_DIR = path.join(__dirname, '../../tmp');
+const TMP_DIR = path.join(__dirname, '../../../tmp');
 if (!fs.existsSync(TMP_DIR)) fs.mkdirSync(TMP_DIR);
 
 class SocdlCommand extends Command {

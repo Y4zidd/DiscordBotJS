@@ -1,7 +1,7 @@
 const { Command } = require('@sapphire/framework');
 const { EmbedBuilder } = require('discord.js');
-const config = require('../config');
-const AIHelper = require('../aiHelper');
+const config = require('../../config');
+const AIHelper = require('../../aiHelper');
 
 class AiCommand extends Command {
   constructor(context, options) {

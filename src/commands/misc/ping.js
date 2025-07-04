@@ -1,5 +1,5 @@
 const { Command } = require('@sapphire/framework');
-const config = require('../config');
+const config = require('../../config');
 
 class PingCommand extends Command {
   constructor(context, options) {

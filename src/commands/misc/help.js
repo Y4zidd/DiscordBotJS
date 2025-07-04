@@ -1,6 +1,6 @@
 const { Command } = require('@sapphire/framework');
 const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
-const config = require('../config');
+const config = require('../../config');
 
 class HelpCommand extends Command {
   constructor(context, options) {
