@@ -41,6 +41,9 @@ class HelpMenuListener extends Listener {
         case 'anime':
           await this.handleAnime(interaction);
           break;
+        case 'youtube':
+          await this.handleYoutube(interaction);
+          break;
         default:
           await interaction.reply({ 
             content: 'Command not recognized!', 
@@ -194,6 +197,25 @@ class HelpMenuListener extends Listener {
       .setMaxLength(100);
 
     const firstActionRow = new ActionRowBuilder().addComponents(animeInput);
+    modal.addComponents(firstActionRow);
+
+    await interaction.showModal(modal);
+  }
+
+  async handleYoutube(interaction) {
+    const modal = new ModalBuilder()
+      .setCustomId('youtube_modal')
+      .setTitle('Search YouTube');
+
+    const queryInput = new TextInputBuilder()
+      .setCustomId('youtube_query')
+      .setLabel('What to search for on YouTube')
+      .setStyle(TextInputStyle.Short)
+      .setPlaceholder('Enter your search query...')
+      .setRequired(true)
+      .setMaxLength(100);
+
+    const firstActionRow = new ActionRowBuilder().addComponents(queryInput);
     modal.addComponents(firstActionRow);
 
     await interaction.showModal(modal);
