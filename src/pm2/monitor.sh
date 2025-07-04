@@ -28,5 +28,5 @@ else
     echo "❌ Bot Status: NOT RUNNING"
     echo ""
     echo "🚀 To start the bot, run:"
-    echo "   ./pm2/start.sh"
+    echo "   ./src/pm2/start.sh"
 fi

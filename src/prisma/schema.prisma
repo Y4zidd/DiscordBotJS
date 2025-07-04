@@ -11,9 +11,9 @@ datasource db {
 }
 
 model AnimeSession {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String
-  query     String
-  data      Json
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String
+  query      String
+  data       Json
   lastActive DateTime
 }

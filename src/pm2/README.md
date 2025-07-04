@@ -24,13 +24,13 @@ npm install -g pm2
 ### 2. Start Bot
 ```bash
 # Using script
-./pm2/start.sh
+./src/pm2/start.sh
 
 # Or using npm
 npm run pm2:start
 
 # Or directly with PM2
-pm2 start pm2/ecosystem.config.js
+pm2 start src/pm2/ecosystem.config.js
 ```
 
 ### 3. Monitoring Bot
@@ -42,7 +42,7 @@ pm2 status
 pm2 logs discord-bot
 
 # Monitor resource usage
-./pm2/monitor.sh
+./src/pm2/monitor.sh
 ```
 
 ### 4. Control Bot
@@ -60,12 +60,12 @@ pm2 delete discord-bot
 ### 5. Setup Auto-Startup (Optional)
 ```bash
 # Setup auto-start when VPS restarts
-./pm2/setup-startup.sh
+./src/pm2/setup-startup.sh
 ```
 
 ## 📊 Log Files
 
-Log files are stored in `pm2/logs/`:
+Log files are stored in `src/pm2/logs/`:
 - `combined.log` - All logs
 - `out.log` - Output log  
 - `err.log` - Error log

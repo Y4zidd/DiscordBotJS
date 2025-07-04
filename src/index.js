@@ -2,7 +2,7 @@
 require('dotenv').config();
 
 const { SapphireClient } = require('@sapphire/framework');
-const { GatewayIntentBits, ActivityType } = require('discord.js');
+const { GatewayIntentBits } = require('discord.js');
 const config = require('./config');
 
 // Create Sapphire client with required configuration
@@ -14,15 +14,7 @@ const client = new SapphireClient({
     GatewayIntentBits.GuildMembers // Required for member join events
   ],
   loadMessageCommandListeners: true, // Untuk message commands
-  defaultPrefix: config.bot.prefix, // Prefix dari config
-  loadSubfolders: true, // Agar semua listener di subfolder listeners otomatis ter-load
-  presence: {
-    activities: [{
-      name: config.bot.presence.activity,
-      type: ActivityType.Playing
-    }],
-    status: config.bot.presence.status
-  }
+  loadSubfolders: true // Agar semua listener di subfolder listeners otomatis ter-load
 });
 
 // Event listener ketika bot berhasil login

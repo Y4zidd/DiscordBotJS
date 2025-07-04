@@ -11,9 +11,9 @@ module.exports = {
       env: {
         NODE_ENV: 'production'
       },
-      error_file: './pm2/logs/err.log',
-      out_file: './pm2/logs/out.log',
-      log_file: './pm2/logs/combined.log',
+      error_file: './src/pm2/logs/err.log',
+      out_file: './src/pm2/logs/out.log',
+      log_file: './src/pm2/logs/combined.log',
       time: true,
       // Restart delay
       restart_delay: 4000,

@@ -1,7 +1,22 @@
 const { Command } = require('@sapphire/framework');
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
-const fs = require('fs');
-const CACHE_FILE = './animeCache.json';
+const config = require('../../config');
+
+// Global In-Memory Cache untuk anime
+global.animeCache = global.animeCache || new Map();
+
+// Cleanup cache setiap interval untuk mencegah memory leak
+setInterval(() => {
+    const now = Date.now();
+    const expireTime = config.cache.youtubeExpiry; // 30 menit
+    
+    for (const [key, entry] of global.animeCache.entries()) {
+        if (now - entry.lastActive > expireTime) {
+            global.animeCache.delete(key);
+            console.log(`[AnimeCache] Cleaned expired session: ${key}`);
+        }
+    }
+}, config.cache.cleanupInterval); // Check setiap 10 menit
 
 // HiAnime akan di-import dinamis saat dibutuhkan
 let HiAnime = null;
@@ -15,40 +30,27 @@ function decodeQuery(q) {
   return decodeURIComponent(q);
 }
 
-// Selalu baca/tulis cache langsung ke file, bukan memory
+// In-memory cache functions - lebih cepat dari file JSON
 function setAnimeCache(key, data) {
-  let fileCache = {};
-  if (fs.existsSync(CACHE_FILE)) {
-    try {
-      fileCache = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
-    } catch {}
-  }
-  fileCache[key] = {
+  global.animeCache.set(key, {
     data,
     lastActive: Date.now()
-  };
-  fs.writeFileSync(CACHE_FILE, JSON.stringify(fileCache));
+  });
 }
 
 function getAnimeCache(key) {
-  let fileCache = {};
-  if (fs.existsSync(CACHE_FILE)) {
-    try {
-      fileCache = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
-    } catch {}
-  }
-  const entry = fileCache[key];
+  const entry = global.animeCache.get(key);
   if (!entry) return null;
+  
   const now = Date.now();
-  if (now - entry.lastActive > 180000) { // 3 minutes
-    delete fileCache[key];
-    fs.writeFileSync(CACHE_FILE, JSON.stringify(fileCache));
+  if (now - entry.lastActive > config.timeouts.animeSession) { // 3 minutes from config
+    global.animeCache.delete(key);
     return 'expired';
   }
+  
   // Update lastActive on access
   entry.lastActive = now;
-  fileCache[key] = entry;
-  fs.writeFileSync(CACHE_FILE, JSON.stringify(fileCache));
+  global.animeCache.set(key, entry);
   return entry.data;
 }
 
@@ -160,10 +162,6 @@ class AnimeCommand extends Command {
 // Button interaction handler for anime pagination & episode
 async function handleAnimeButton(interaction) {
   try {
-    // Hapus: reload cache dari file (tidak perlu lagi)
-    // if (fs.existsSync(CACHE_FILE)) {
-    //   Object.assign(animeCache, JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8')));
-    // }
     if (!interaction.isButton() || !interaction.customId.startsWith('anime|')) return;
     const parts = interaction.customId.split('|');
     const action = parts[1];
@@ -175,20 +173,25 @@ async function handleAnimeButton(interaction) {
     
     // Special handling for epclose action - don't check cache first
     if (action === 'epclose') {
-      // Manual close: delete cache and disable all buttons
+      // Manual close: delete cache and show only thank you message
       console.log('Deleting cache with key:', cacheKey);
       deleteAnimeCache(cacheKey);
-      const embed = interaction.message.embeds[0];
-      const disabledRow = new ActionRowBuilder().addComponents(
-        interaction.message.components[0].components.map(btn => ButtonBuilder.from(btn).setDisabled(true))
-      );
-      return interaction.update({ embeds: [embed], components: [disabledRow], content: 'Session closed. You can search again anytime.' });
+      
+      return interaction.update({ 
+        content: '✅ **Session closed successfully!**\n\nThank you for using the anime search feature. You can search for anime anytime with `/anime` command.\n\nHave a great day!', 
+        embeds: [], 
+        components: [] 
+      });
     }
     
     // For all other actions, check cache
     const allData = getAnimeCache(cacheKey);
     if (allData === 'expired') {
-      return interaction.reply({ content: 'Your session has expired due to inactivity (over 3 minutes). Please search again to continue.', flags: MessageFlags.Ephemeral });
+      return interaction.update({ 
+        content: '⏰ **Session expired due to inactivity**\n\nYour anime search session has been automatically closed after 3 minutes of inactivity. This helps keep the bot running smoothly.\n\nYou can start a new search anytime with `/anime` command. Happy watching!', 
+        embeds: [], 
+        components: [] 
+      });
     }
     if (!allData) {
       return interaction.reply({ content: 'No active session found. Please search again.', flags: MessageFlags.Ephemeral });
@@ -249,29 +252,17 @@ async function handleAnimeButton(interaction) {
   }
 }
 
-// Fungsi untuk menghapus cache user dari file
+// Fungsi untuk menghapus cache user dari memory
 function deleteAnimeCache(key) {
   console.log('deleteAnimeCache called with key:', key);
-  let fileCache = {};
-  if (fs.existsSync(CACHE_FILE)) {
-    try {
-      fileCache = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
-      console.log('Current cache keys:', Object.keys(fileCache));
-    } catch (e) {
-      console.error('Error reading cache file:', e);
-    }
-  }
-  if (fileCache[key]) {
+  if (global.animeCache.has(key)) {
     console.log('Cache key found, deleting...');
-    delete fileCache[key];
-    try {
-      fs.writeFileSync(CACHE_FILE, JSON.stringify(fileCache));
-      console.log('Cache successfully deleted and file updated');
-    } catch (e) {
-      console.error('Error writing cache file:', e);
-    }
+    global.animeCache.delete(key);
+    console.log('Cache successfully deleted from memory');
+    console.log('Remaining cache keys:', Array.from(global.animeCache.keys()));
   } else {
-    console.log('Cache key not found in file:', key);
+    console.log('Cache key not found in memory:', key);
+    console.log('Available cache keys:', Array.from(global.animeCache.keys()));
   }
 }
 

@@ -13,7 +13,7 @@ if [ ! -d "node_modules" ]; then
 fi
 
 # Start bot dengan PM2
-pm2 start pm2/ecosystem.config.js
+pm2 start src/pm2/ecosystem.config.js
 
 # Show status
 echo "✅ Bot started! Status:"
