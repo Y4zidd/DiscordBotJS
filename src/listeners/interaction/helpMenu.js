@@ -44,6 +44,9 @@ class HelpMenuListener extends Listener {
         case 'youtube':
           await this.handleYoutube(interaction);
           break;
+        case 'character':
+          await this.handleCharacter(interaction);
+          break;
         default:
           await interaction.reply({ 
             content: 'Command not recognized!', 
@@ -216,6 +219,25 @@ class HelpMenuListener extends Listener {
       .setMaxLength(100);
 
     const firstActionRow = new ActionRowBuilder().addComponents(queryInput);
+    modal.addComponents(firstActionRow);
+
+    await interaction.showModal(modal);
+  }
+
+  async handleCharacter(interaction) {
+    const modal = new ModalBuilder()
+      .setCustomId('character_modal')
+      .setTitle('Search Anime Character (MyAnimeList)');
+
+    const characterInput = new TextInputBuilder()
+      .setCustomId('character_name')
+      .setLabel('Character Name')
+      .setStyle(TextInputStyle.Short)
+      .setPlaceholder('Example: Reimu Hakurei, Naruto, Luffy, etc.')
+      .setRequired(true)
+      .setMaxLength(100);
+
+    const firstActionRow = new ActionRowBuilder().addComponents(characterInput);
     modal.addComponents(firstActionRow);
 
     await interaction.showModal(modal);

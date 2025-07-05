@@ -34,34 +34,52 @@ class HelpCommand extends Command {
 
     // Main help embed
     const helpEmbed = new EmbedBuilder()
-      .setTitle('Bot Command Menu')
-      .setDescription('Select a command from the dropdown menu below to use it directly!')
-      .setColor(config.colors.primary)
+      .setTitle('🤖 Y4zBot Command Center')
+      .setDescription('Welcome to the ultimate Discord bot experience! 🎉\n\n**Select a command from the dropdown menu below to use it directly!**')
+      .setColor('#4ECDC4')
       .addFields(
         {
-          name: 'Available Commands',
+          name: '🎮 **Utility Commands**',
           value: 
-            'Ping - Check bot latency\n' +
-            'Chat - AI conversation\n' +
-            'Air - Weather & air quality info\n' +
-            'YouTube - Search videos on YouTube\n' +
-            'Socdl - Download video from Instagram, Facebook, or TikTok\n' +
-            'Purge - Bulk delete messages in a channel\n' +
-            'Help - Show this menu\n' +
-            'Manga - Search manga from MangaDex\n' +
-            'Anime - Search anime from HiAnime (Aniwatch) with embed navigation and episode list',
+            '`/ping` - Check bot latency and connection status\n' +
+            '`/help` - Show this help menu\n' +
+            '`/purge` - Bulk delete messages (1-100)',
           inline: false
         },
         {
-          name: 'How to Use',
-          value: 'Select a command from the dropdown menu below, or type manually:\n' +
-                 '• Slash commands: `/ping`, `/chat`, `/air`, `/anime`\n' +
-                 '• Message commands: `!ping`, `!chat`, `!air`, `!anime`',
+          name: '🤖 **AI & Information**',
+          value: 
+            '`/chat` - AI conversation with Gemini\n' +
+            '`/air` - Weather & air quality information',
+          inline: false
+        },
+        {
+          name: '📺 **Media & Entertainment**',
+          value: 
+            '`/youtube` - Search videos on YouTube\n' +
+            '`/socdl` - Download from Instagram/Facebook/TikTok',
+          inline: false
+        },
+        {
+          name: '📚 **Anime & Manga**',
+          value: 
+            '`/anime` - Search anime from HiAnime with episodes\n' +
+            '`/manga` - Search manga from MangaDex with collage\n' +
+            '`/character` - Search anime characters from MyAnimeList',
+          inline: false
+        }
+      )
+      .addFields(
+        {
+          name: '💡 **How to Use**',
+          value: '**Dropdown Menu:** Select any command below for instant access!\n' +
+                 '**Slash Commands:** `/ping`, `/chat`, `/anime`, `/character`\n' +
+                 '**Message Commands:** `!ping`, `!chat`, `!anime`, `!character`',
           inline: false
         }
       )
       .setFooter({ 
-        text: 'Select from dropdown to use a command directly!',
+        text: '🎯 Select from dropdown to use a command directly! • Powered by Y4zBot',
         iconURL: context.client?.user?.displayAvatarURL() || undefined
       })
       .setTimestamp();
@@ -69,52 +87,57 @@ class HelpCommand extends Command {
     // Create dropdown menu
     const selectMenu = new StringSelectMenuBuilder()
       .setCustomId('help_command_select')
-      .setPlaceholder('Select the command you want to use...')
+      .setPlaceholder('🎯 Select a command to use instantly...')
       .addOptions([
         {
-          label: 'Ping - Check Latency',
+          label: '🏓 Ping - Check Latency',
           description: 'Check bot latency and connection status',
           value: 'ping'
         },
         {
-          label: 'Chat - AI Conversation', 
+          label: '🤖 Chat - AI Conversation', 
           description: 'Start conversation with Gemini AI',
           value: 'chat'
         },
         {
-          label: 'Air - Weather & Air Quality',
+          label: '🌤️ Air - Weather & Air Quality',
           description: 'Check weather and air quality of a city',
           value: 'air'
         },
         {
-          label: 'YouTube - Search Videos',
+          label: '📺 YouTube - Search Videos',
           description: 'Search for videos on YouTube',
           value: 'youtube'
         },
         {
-          label: 'Socdl - Video Downloader',
+          label: '⬇️ Socdl - Video Downloader',
           description: 'Download video from Instagram, Facebook, or TikTok',
           value: 'socdl'
         },
         {
-          label: 'Purge - Bulk Delete Messages',
+          label: '🗑️ Purge - Bulk Delete Messages',
           description: 'Bulk delete messages in this channel',
           value: 'purge'
         },
         {
-          label: 'Help - Show Menu',
+          label: '❓ Help - Show Menu',
           description: 'Show this help menu again',
           value: 'help'
         },
         {
-          label: 'Manga - Search Manga',
+          label: '📚 Manga - Search Manga',
           description: 'Search manga from MangaDex with interactive collage & unlimited pagination',
           value: 'manga'
         },
         {
-          label: 'Anime - Search Anime',
+          label: '🎬 Anime - Search Anime',
           description: 'Search anime from HiAnime (Aniwatch) with embed navigation and episode list',
           value: 'anime'
+        },
+        {
+          label: '👤 Character - Search Characters',
+          description: 'Search anime characters from MyAnimeList with detailed info and voice actors',
+          value: 'character'
         }
       ]);
 

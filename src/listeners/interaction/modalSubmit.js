@@ -34,6 +34,9 @@ class ModalSubmitListener extends Listener {
         case 'youtube_modal':
           await this.handleYoutubeModal(interaction);
           break;
+        case 'character_modal':
+          await this.handleCharacterModal(interaction);
+          break;
       }
     } catch (error) {
       console.error('Error handling modal submit:', error);
@@ -166,6 +169,23 @@ class ModalSubmitListener extends Listener {
     } else {
       await interaction.reply({
         content: 'YouTube command not found!',
+        ephemeral: true
+      });
+    }
+  }
+
+  async handleCharacterModal(interaction) {
+    const characterName = interaction.fields.getTextInputValue('character_name');
+    // Get the character command and run it directly
+    const characterCommand = this.container.stores.get('commands').get('character');
+    if (characterCommand) {
+      interaction.options = {
+        getString: () => characterName
+      };
+      await characterCommand.chatInputRun(interaction);
+    } else {
+      await interaction.reply({
+        content: 'Character command not found!',
         ephemeral: true
       });
     }
