@@ -208,10 +208,10 @@ class HelpMenuListener extends Listener {
       .setTitle('Search YouTube');
 
     const queryInput = new TextInputBuilder()
-      .setCustomId('youtube_query')
-      .setLabel('What to search for on YouTube')
+      .setCustomId('youtube_title')
+      .setLabel('Video title to search for')
       .setStyle(TextInputStyle.Short)
-      .setPlaceholder('Enter your search query...')
+      .setPlaceholder('Enter video title...')
       .setRequired(true)
       .setMaxLength(100);
 

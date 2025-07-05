@@ -31,6 +31,9 @@ class ModalSubmitListener extends Listener {
         case 'anime_modal':
           await this.handleAnimeModal(interaction);
           break;
+        case 'youtube_modal':
+          await this.handleYoutubeModal(interaction);
+          break;
       }
     } catch (error) {
       console.error('Error handling modal submit:', error);
@@ -146,6 +149,23 @@ class ModalSubmitListener extends Listener {
     } else {
       await interaction.reply({
         content: 'Anime command not found!',
+        ephemeral: true
+      });
+    }
+  }
+
+  async handleYoutubeModal(interaction) {
+    const query = interaction.fields.getTextInputValue('youtube_title');
+    // Get the youtube command and run it directly
+    const youtubeCommand = this.container.stores.get('commands').get('youtube');
+    if (youtubeCommand) {
+      interaction.options = {
+        getString: () => query
+      };
+      await youtubeCommand.chatInputRun(interaction);
+    } else {
+      await interaction.reply({
+        content: 'YouTube command not found!',
         ephemeral: true
       });
     }

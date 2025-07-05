@@ -106,8 +106,8 @@ const commands = [
     description: 'Search for a video on YouTube',
     options: [
       {
-        name: 'query',
-        description: 'The video to search for',
+        name: 'title',
+        description: 'The video title to search for',
         type: 3, // STRING type
         required: true
       }
@@ -132,6 +132,18 @@ const commands = [
       {
         name: 'title',
         description: 'The title of the manga to search for',
+        type: 3, // STRING type
+        required: true
+      }
+    ]
+  },
+  {
+    name: 'character',
+    description: 'Search for anime characters from MyAnimeList',
+    options: [
+      {
+        name: 'name',
+        description: 'The name of the character to search for',
         type: 3, // STRING type
         required: true
       }

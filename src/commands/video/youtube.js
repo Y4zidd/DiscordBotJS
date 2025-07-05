@@ -27,22 +27,56 @@ class YoutubeCommand extends Command {
         });
     }
 
-    async chatInputRun(interaction) {
-        const query = interaction.options.getString('query');
-        await interaction.deferReply();
+    registerApplicationCommands(registry) {
+        registry.registerChatInputCommand((builder) =>
+            builder
+                .setName('youtube')
+                .setDescription('Search for YouTube videos')
+                .addStringOption((option) =>
+                    option
+                        .setName('title')
+                        .setDescription('The video title to search for')
+                        .setRequired(true)
+                )
+        );
+    }
 
+    async chatInputRun(interaction) {
+        const query = interaction.options.getString('title');
+        await this.handleYouTubeSearch(interaction, query);
+    }
+
+    // Message command
+    async messageRun(message, args) {
+        const query = args.rest;
+        if (!query) {
+            return message.reply('Please enter a video title! Example: `!youtube how to code`');
+        }
+        await this.handleYouTubeSearch(message, query);
+    }
+
+    async handleYouTubeSearch(context, query) {
+        const isInteraction = context.isCommand ? context.isCommand() : false;
+        
         try {
+            // Defer reply for slash command
+            if (isInteraction) {
+                await context.deferReply();
+            }
+
             // Search menggunakan YouTube.search sesuai dokumentasi
             const searchResults = await YouTube.search(query, { limit: 10, type: 'video' });
             
             if (!searchResults || searchResults.length === 0) {
-                return interaction.editReply({ 
-                    content: `❌ No videos found for: **${query}**\nTry using different keywords.`,
-                    ephemeral: true 
-                });
+                const noResultsMsg = `❌ No videos found for: **${query}**\nTry using different keywords.`;
+                return isInteraction ? 
+                    context.editReply({ content: noResultsMsg, ephemeral: true }) : 
+                    context.reply({ content: noResultsMsg });
             }
 
-            const messageId = (await interaction.fetchReply()).id;
+            const messageId = isInteraction ? 
+                (await context.fetchReply()).id : 
+                context.id;
 
             // Map hasil pencarian sesuai struktur Response Example dari dokumentasi
             const videos = searchResults.map(video => ({
@@ -87,17 +121,17 @@ class YoutubeCommand extends Command {
             const embed = this.createVideoEmbed(videos, 0, query);
             const components = this.createNavigationButtons(messageId, 0, videos.length);
 
-            await interaction.editReply({ 
-                embeds: [embed], 
-                components: [components] 
-            });
+            const response = { embeds: [embed], components: [components] };
+            return isInteraction ? 
+                context.editReply(response) : 
+                context.reply(response);
 
         } catch (error) {
             console.error('[YouTubeCommand] Search Error:', error);
-            await interaction.editReply({ 
-                content: `❌ An error occurred while searching: \`${error.message}\`\nPlease try again later.`,
-                ephemeral: true 
-            });
+            const errorMsg = `❌ An error occurred while searching: \`${error.message}\`\nPlease try again later.`;
+            return isInteraction ? 
+                context.editReply({ content: errorMsg, ephemeral: true }) : 
+                context.reply({ content: errorMsg });
         }
     }
 

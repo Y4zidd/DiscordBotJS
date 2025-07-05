@@ -21,6 +21,7 @@
 |    Help    |   Interactive Command Menu       |   ✅   |
 |  Welcome/Goodbye | Custom image for member join/leave |   ✅   |
 |   Purge    |   Bulk Delete Messages           |   ✅   |
+|  YouTube   |   Search videos on YouTube       |   ✅   |
 |    Ping    |        Check Bot Latency         |   ✅   |
 
 ## 🚀 Getting Started

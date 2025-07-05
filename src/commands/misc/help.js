@@ -44,6 +44,7 @@ class HelpCommand extends Command {
             'Ping - Check bot latency\n' +
             'Chat - AI conversation\n' +
             'Air - Weather & air quality info\n' +
+            'YouTube - Search videos on YouTube\n' +
             'Socdl - Download video from Instagram, Facebook, or TikTok\n' +
             'Purge - Bulk delete messages in a channel\n' +
             'Help - Show this menu\n' +
@@ -84,6 +85,11 @@ class HelpCommand extends Command {
           label: 'Air - Weather & Air Quality',
           description: 'Check weather and air quality of a city',
           value: 'air'
+        },
+        {
+          label: 'YouTube - Search Videos',
+          description: 'Search for videos on YouTube',
+          value: 'youtube'
         },
         {
           label: 'Socdl - Video Downloader',
