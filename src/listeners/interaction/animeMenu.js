@@ -1,5 +1,5 @@
 const { Listener } = require('@sapphire/framework');
-const { handleAnimeButton } = require('../../commands/weebs/anime');
+const { handleAnimeButton } = require('../../commands/otaku/anime');
 
 class AnimeMenuListener extends Listener {
   constructor(context, options) {
