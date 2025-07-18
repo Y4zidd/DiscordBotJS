@@ -32,10 +32,13 @@ class HelpCommand extends Command {
   async showHelpMenu(context) {
     const isInteraction = context.isCommand ? context.isCommand() : false;
 
+    // Get bot name from client
+    const botName = context.client?.user?.username || 'Bot';
+
     // Main help embed
     const helpEmbed = new EmbedBuilder()
-      .setTitle('🤖 Y4zBot Command Center')
-      .setDescription('Welcome to the ultimate Discord bot experience! 🎉\n\n**Select a command from the dropdown menu below to use it directly!**')
+      .setTitle(`🤖 ${botName} Command Center`)
+      .setDescription(`Welcome to the ultimate Discord bot experience! 🎉\n\n**Select a command from the dropdown menu below to use it directly!**`)
       .setColor('#4ECDC4')
       .addFields(
         {
@@ -79,7 +82,7 @@ class HelpCommand extends Command {
         }
       )
       .setFooter({ 
-        text: '🎯 Select from dropdown to use a command directly! • Powered by Y4zBot',
+        text: `🎯 Select from dropdown to use a command directly! • Powered by ${botName}`,
         iconURL: context.client?.user?.displayAvatarURL() || undefined
       })
       .setTimestamp();

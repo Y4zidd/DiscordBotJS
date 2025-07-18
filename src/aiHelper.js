@@ -41,11 +41,12 @@ class AIHelper {
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     // Remove emoji and emoji instructions from prompt
-    const prompt = `You are Y4zBot, a friendly and helpful Discord bot. Characteristics:
-- Speak in casual and friendly English
-- Answer briefly and naturally (maximum 2-3 sentences)
-- If asked about yourself, say you are Y4zBot
-- Don't be too formal, keep it casual
+    const botName = context?.client?.user?.username || 'Bot';
+    const prompt = `You are ${botName}, a friendly and helpful Discord bot. Characteristics:
+    - Speak in casual and friendly English
+    - Answer briefly and naturally (maximum 2-3 sentences)
+    - If asked about yourself, say you are ${botName}
+    - Don't be too formal, keep it casual
 
 User speaking: ${username}
 Message: ${userMessage}

@@ -105,7 +105,7 @@ class AiCommand extends Command {
         },
         {
           name: `How to Use`,
-          value: '• Mention bot: `@Y4zBot hello`\n• DM the bot directly\n• Say the bot\'s name: "Y4zBot how are you?"',
+          value: `\u2022 Mention bot: \`@${interaction?.client?.user?.username || 'Bot'} hello\`\n\u2022 DM the bot directly\n\u2022 Say the bot's name: \"${interaction?.client?.user?.username || 'Bot'} how are you?\"`,
           inline: false
         },
         {
