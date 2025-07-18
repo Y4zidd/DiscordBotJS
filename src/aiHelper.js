@@ -59,8 +59,8 @@ Response:`;
   }
 
   getSimpleResponse(userMessage, username) {
-    // Fallback sederhana untuk error
-    return `Hmm, aku lagi ada masalah nih ${username}. Coba tanya lagi ya!`;
+    // Simple fallback for error
+    return `Hmm, I'm having some trouble right now, ${username}. Please try asking again later!`;
   }
 
   getStatus() {
